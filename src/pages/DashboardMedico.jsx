@@ -16,17 +16,18 @@ export default function DashboardMedico() {
     return 1
   }
 
-  const obterPesoStatus = (status) => {
-    if (status === 'em_atendimento') return 3
-    if (status === 'pendente') return 2
-    if (status === 'em_acompanhamento') return 1
+  const obterPesoStatus = (caso) => {
+    if (caso.aguardando_video) return 4
+    if (caso.status === 'em_atendimento') return 3
+    if (caso.status === 'pendente') return 2
+    if (caso.status === 'em_acompanhamento') return 1
     return 0
   }
 
   const ordenarCasos = (lista) => {
     return [...lista].sort((a, b) => {
-      const statusB = obterPesoStatus(b.status)
-      const statusA = obterPesoStatus(a.status)
+      const statusB = obterPesoStatus(b)
+      const statusA = obterPesoStatus(a)
 
       if (statusB !== statusA) {
         return statusB - statusA
@@ -129,11 +130,16 @@ export default function DashboardMedico() {
 
   const casosFiltrados = casos.filter((caso) => {
     if (filtroStatus === 'todos') return true
+    if (filtroStatus === 'aguardando_video') return caso.aguardando_video
     return caso.status === filtroStatus
   })
 
   const contarPorStatus = (status) => {
     return casos.filter((caso) => caso.status === status).length
+  }
+
+  const contarAguardandoVideo = () => {
+    return casos.filter((caso) => caso.aguardando_video).length
   }
 
   return (
@@ -148,7 +154,7 @@ export default function DashboardMedico() {
               Painel do Assistente Social
             </h1>
             <p className="text-[#5a8a72] text-sm mt-1">
-              Acompanhe casos sociais abertos, atendimentos em andamento e solicitações pendentes.
+              Acompanhe casos sociais abertos, atendimentos em andamento e cidadãos aguardando vídeo.
             </p>
           </div>
 
@@ -160,7 +166,7 @@ export default function DashboardMedico() {
           </button>
         </div>
 
-        <div className="grid md:grid-cols-4 gap-4 mb-6">
+        <div className="grid md:grid-cols-5 gap-4 mb-6">
           <button
             onClick={() => setFiltroStatus('todos')}
             className={`text-left bg-[#111f1a] border rounded-2xl p-5 transition-all ${
@@ -169,6 +175,16 @@ export default function DashboardMedico() {
           >
             <p className="text-[#5a8a72] text-xs uppercase tracking-wider mb-2">Casos abertos</p>
             <p className="text-[#e8f0ec] text-2xl font-semibold">{casos.length}</p>
+          </button>
+
+          <button
+            onClick={() => setFiltroStatus('aguardando_video')}
+            className={`text-left bg-[#111f1a] border rounded-2xl p-5 transition-all ${
+              filtroStatus === 'aguardando_video' ? 'border-[#4ab882]' : 'border-[#1e3b2e]'
+            }`}
+          >
+            <p className="text-[#5a8a72] text-xs uppercase tracking-wider mb-2">Aguardando vídeo</p>
+            <p className="text-[#e8f0ec] text-2xl font-semibold">{contarAguardandoVideo()}</p>
           </button>
 
           <button
@@ -207,6 +223,7 @@ export default function DashboardMedico() {
             <thead>
               <tr className="text-[#4a7a60] text-xs uppercase tracking-wider border-b border-[#1e3b2e] bg-[#152b24]">
                 <th className="px-6 py-4">Status</th>
+                <th className="px-6 py-4">Vídeo</th>
                 <th className="px-6 py-4">Prioridade</th>
                 <th className="px-6 py-4">Cidadão</th>
                 <th className="px-6 py-4">Demanda / Situações</th>
@@ -217,7 +234,7 @@ export default function DashboardMedico() {
             <tbody className="divide-y divide-[#1a3330]">
               {carregando && (
                 <tr>
-                  <td colSpan="5" className="px-6 py-10 text-center text-[#5a8a72] text-sm">
+                  <td colSpan="6" className="px-6 py-10 text-center text-[#5a8a72] text-sm">
                     Carregando casos sociais...
                   </td>
                 </tr>
@@ -225,7 +242,7 @@ export default function DashboardMedico() {
 
               {!carregando && casosFiltrados.length === 0 && (
                 <tr>
-                  <td colSpan="5" className="px-6 py-10 text-center text-[#5a8a72] text-sm">
+                  <td colSpan="6" className="px-6 py-10 text-center text-[#5a8a72] text-sm">
                     Nenhum caso encontrado para este filtro.
                   </td>
                 </tr>
@@ -237,6 +254,18 @@ export default function DashboardMedico() {
                     <span className={`inline-block border px-2 py-1 rounded-md text-[10px] font-bold ${obterCorStatus(caso.status)}`}>
                       {obterTextoStatus(caso.status)}
                     </span>
+                  </td>
+
+                  <td className="px-6 py-4">
+                    {caso.aguardando_video ? (
+                      <span className="inline-block border border-blue-600/40 bg-blue-500/20 text-blue-300 px-2 py-1 rounded-md text-[10px] font-bold">
+                        Aguardando
+                      </span>
+                    ) : (
+                      <span className="text-[#4a7a60] text-xs">
+                        —
+                      </span>
+                    )}
                   </td>
 
                   <td className="px-6 py-4">
@@ -256,9 +285,11 @@ export default function DashboardMedico() {
                   <td className="px-6 py-4">
                     <button
                       onClick={() => abrirCaso(caso)}
-                      className="bg-[#1e7a52] text-white text-xs px-4 py-2 rounded-lg opacity-80 group-hover:opacity-100 transition-all"
+                      className={`text-white text-xs px-4 py-2 rounded-lg opacity-80 group-hover:opacity-100 transition-all ${
+                        caso.aguardando_video ? 'bg-blue-700' : 'bg-[#1e7a52]'
+                      }`}
                     >
-                      Abrir caso
+                      Abrir caso 
                     </button>
                   </td>
                 </tr>
@@ -268,9 +299,7 @@ export default function DashboardMedico() {
         </div>
 
         <p className="text-[#4a7a60] text-xs mt-5 leading-relaxed">
-          Este painel usa a tabela atual de triagens como base temporária para representar casos sociais.
-          As próximas etapas do projeto podem separar definitivamente as entidades de caso, mensagens,
-          documentos, plano de ação e sessões de vídeo.
+          O indicador “Aguardando vídeo” aparece quando o cidadão entrou na sala de espera da teleconferência.
         </p>
       </div>
     </div>

@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { supabase } from '../supabaseClient'
 import VideoCall from '../components/VideoCall'
-import MensagensCaso from '../components/MensagensCaso'
 
 export default function ConsultaMedico() {
   const navigate = useNavigate()
@@ -87,7 +86,10 @@ export default function ConsultaMedico() {
 
     const { error } = await supabase
       .from('triagens')
-      .update({ status: 'em_atendimento' })
+      .update({
+        status: 'em_atendimento',
+        aguardando_video: false,
+      })
       .eq('id', idTriagem)
 
     setSalvando(false)
@@ -115,7 +117,10 @@ export default function ConsultaMedico() {
 
     const { error } = await supabase
       .from('triagens')
-      .update({ status: 'em_acompanhamento' })
+      .update({
+        status: 'em_acompanhamento',
+        aguardando_video: false,
+      })
       .eq('id', idTriagem)
 
     setSalvando(false)
@@ -143,7 +148,10 @@ export default function ConsultaMedico() {
 
     const { error } = await supabase
       .from('triagens')
-      .update({ status: 'concluido' })
+      .update({
+        status: 'concluido',
+        aguardando_video: false,
+      })
       .eq('id', idTriagem)
 
     setSalvando(false)
@@ -163,6 +171,19 @@ export default function ConsultaMedico() {
     }
 
     alert('Encaminhamento registrado apenas visualmente neste MVP. A funcionalidade completa poderá ser ligada ao Plano de Ação ou Mensagens.')
+  }
+
+  const abrirMensagens = () => {
+    if (!caso?.id || caso?.isDemo) {
+      alert('Mensagens não estão disponíveis para o caso demonstrativo.')
+      return
+    }
+
+    sessionStorage.setItem('elosocial_caso_atual', caso.id)
+
+    navigate('/mensagens-assistente', {
+      state: { idTriagem: caso.id },
+    })
   }
 
   const formatarSituacoes = (situacoes) => {
@@ -366,38 +387,43 @@ export default function ConsultaMedico() {
             </p>
           </div>
 
-          <MensagensCaso
-            casoId={caso?.id}
-            remetenteTipo="assistente"
-            remetenteNome="Assistente Social"
-          />
-
           <div className="bg-[#111f1a] border border-[#1e3b2e] rounded-3xl p-6">
             <h3 className="text-[#4ab882] text-xs font-bold uppercase tracking-widest mb-4">
               Recursos do caso
             </h3>
 
             <div className="space-y-3">
-              <div className="border border-[#1e3b2e] rounded-2xl p-4 bg-[#0d1f1a] opacity-80">
+              <button
+                onClick={abrirMensagens}
+                className="w-full text-left border border-[#1e3b2e] rounded-2xl p-4 bg-[#0d1f1a] hover:border-[#2a6b52] transition-all"
+              >
                 <p className="text-[#e8f0ec] text-sm font-medium">Mensagens</p>
                 <p className="text-[#5a8a72] text-xs mt-1">
-                  Futuro chat salvo no histórico do caso.
+                  Abrir conversa salva no histórico do caso.
                 </p>
-              </div>
+              </button>
 
-              <div className="border border-[#1e3b2e] rounded-2xl p-4 bg-[#0d1f1a] opacity-80">
+              <button
+                type="button"
+                onClick={() => alert('Plano de ação será implementado na próxima etapa.')}
+                className="w-full text-left border border-[#1e3b2e] rounded-2xl p-4 bg-[#0d1f1a] hover:border-[#2a6b52] transition-all"
+              >
                 <p className="text-[#e8f0ec] text-sm font-medium">Plano de ação</p>
                 <p className="text-[#5a8a72] text-xs mt-1">
                   Tarefas e próximos passos acompanhados pelo cidadão.
                 </p>
-              </div>
+              </button>
 
-              <div className="border border-[#1e3b2e] rounded-2xl p-4 bg-[#0d1f1a] opacity-80">
+              <button
+                type="button"
+                onClick={() => alert('Cofre digital será implementado em uma próxima etapa.')}
+                className="w-full text-left border border-[#1e3b2e] rounded-2xl p-4 bg-[#0d1f1a] hover:border-[#2a6b52] transition-all"
+              >
                 <p className="text-[#e8f0ec] text-sm font-medium">Cofre digital</p>
                 <p className="text-[#5a8a72] text-xs mt-1">
                   Documentos enviados pelo cidadão.
                 </p>
-              </div>
+              </button>
             </div>
           </div>
 

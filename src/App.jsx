@@ -5,6 +5,7 @@ import Triagem from './pages/Triagem'
 import Consulta from './pages/Consulta'
 import Acompanhamento from './pages/Acompanhamento'
 import Mensagens from './pages/Mensagens'
+import MensagensAssistente from './pages/MensagensAssistente'
 import DashboardMedico from './pages/DashboardMedico'
 import ConsultaMedico from './pages/ConsultaMedico'
 
@@ -18,6 +19,7 @@ export default function App() {
         <Route path="/consulta" element={<Consulta />} />
         <Route path="/acompanhamento" element={<Acompanhamento />} />
         <Route path="/mensagens" element={<Mensagens />} />
+        <Route path="/mensagens-assistente" element={<MensagensAssistente />} />
         <Route path="/dashboard-medico" element={<DashboardMedico />} />
         <Route path="/consulta-medica" element={<ConsultaMedico />} />
       </Routes>
