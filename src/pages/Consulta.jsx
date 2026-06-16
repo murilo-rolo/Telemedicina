@@ -9,6 +9,7 @@ export default function Consulta() {
   const [chamadaAtiva, setChamadaAtiva] = useState(false)
   const [nomeUsuario, setNomeUsuario] = useState('')
   const [carregando, setCarregando] = useState(true)
+
   const casoIdRef = useRef(null)
   const statusRef = useRef(null)
 
@@ -16,6 +17,7 @@ export default function Consulta() {
 
   useEffect(() => {
     let canal
+    let componenteAtivo = true
 
     const configurarAtendimento = async () => {
       setCarregando(true)
@@ -32,6 +34,8 @@ export default function Consulta() {
         .select('nome')
         .eq('id', user.id)
         .maybeSingle()
+
+      if (!componenteAtivo) return
 
       if (perfil?.nome) {
         setNomeUsuario(perfil.nome)
@@ -67,13 +71,20 @@ export default function Consulta() {
         return
       }
 
-      await supabase
-        .from('triagens')
-        .update({ aguardando_video: true })
-        .eq('id', solicitacaoAtual.id)
-
       if (solicitacaoAtual.status === 'em_atendimento') {
+        await supabase
+          .from('triagens')
+          .update({ aguardando_video: false })
+          .eq('id', solicitacaoAtual.id)
+
+        if (!componenteAtivo) return
+
         setChamadaAtiva(true)
+      } else {
+        await supabase
+          .from('triagens')
+          .update({ aguardando_video: true })
+          .eq('id', solicitacaoAtual.id)
       }
 
       canal = supabase
@@ -87,15 +98,26 @@ export default function Consulta() {
             filter: `user_id=eq.${user.id}`,
           },
           (payload) => {
-            statusRef.current = payload.new.status
+            const statusAnterior = statusRef.current
+            const novoStatus = payload.new.status
 
-            if (payload.new.status === 'em_atendimento') {
+            statusRef.current = novoStatus
+
+            if (novoStatus === 'em_atendimento') {
               setChamadaAtiva(true)
+              setCarregando(false)
+              return
+            }
+
+            if (novoStatus === 'concluido') {
+              setChamadaAtiva(false)
+              navigate('/acompanhamento')
+              return
             }
 
             if (
-              payload.new.status === 'em_acompanhamento' ||
-              payload.new.status === 'concluido'
+              statusAnterior === 'em_atendimento' &&
+              novoStatus !== 'em_atendimento'
             ) {
               setChamadaAtiva(false)
               navigate('/acompanhamento')
@@ -104,22 +126,18 @@ export default function Consulta() {
         )
         .subscribe()
 
-      setCarregando(false)
+      if (componenteAtivo) {
+        setCarregando(false)
+      }
     }
 
     configurarAtendimento()
 
     return () => {
+      componenteAtivo = false
+
       if (canal) {
         supabase.removeChannel(canal)
-      }
-
-      if (casoIdRef.current && statusRef.current !== 'em_atendimento') {
-        supabase
-          .from('triagens')
-          .update({ aguardando_video: false })
-          .eq('id', casoIdRef.current)
-          .then(() => {})
       }
     }
   }, [navigate])
