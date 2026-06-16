@@ -134,7 +134,7 @@ ${detalhes || 'Não informado'}
     if (solicitacaoExistente) {
       alert('Você já possui uma solicitação em andamento. Vamos te levar para a fila de atendimento.')
       setEnviando(false)
-      navigate('/consulta')
+      navigate('/acompanhamento')
       return
     }
 
@@ -165,7 +165,7 @@ ${detalhes || 'Não informado'}
     if (error) {
       alert('Erro ao enviar solicitação: ' + error.message)
     } else {
-      navigate('/consulta')
+      navigate('/acompanhamento')
     }
   }
 

@@ -11,7 +11,7 @@ export default function Consulta() {
   const [carregando, setCarregando] = useState(true)
 
   // Mantemos a sala atual do Daily por enquanto para não quebrar a integração.
-  // Depois podemos trocar para uma sala com nome do EloSocial.
+  // Depois podemos trocar para uma sala individual por caso.
   const URL_SALA = 'https://telesaude.daily.co/Sala-atendimento'
 
   useEffect(() => {
@@ -37,14 +37,11 @@ export default function Consulta() {
         setNomeUsuario(perfil.nome)
       }
 
-      // Correção importante:
-      // antes a tela só esperava o realtime.
-      // agora ela também verifica o status atual da solicitação quando a página abre.
       const { data: solicitacaoAtual, error: erroSolicitacao } = await supabase
         .from('triagens')
         .select('id, status')
         .eq('user_id', user.id)
-        .in('status', ['pendente', 'em_atendimento'])
+        .in('status', ['pendente', 'em_atendimento', 'em_acompanhamento', 'concluido'])
         .order('created_at', { ascending: false })
         .limit(1)
         .maybeSingle()
@@ -64,6 +61,14 @@ export default function Consulta() {
         setChamadaAtiva(true)
       }
 
+      if (
+        solicitacaoAtual.status === 'em_acompanhamento' ||
+        solicitacaoAtual.status === 'concluido'
+      ) {
+        navigate('/acompanhamento')
+        return
+      }
+
       canal = supabase
         .channel(`mudanca_status_${user.id}`)
         .on(
@@ -79,8 +84,12 @@ export default function Consulta() {
               setChamadaAtiva(true)
             }
 
-            if (payload.new.status === 'concluido') {
+            if (
+              payload.new.status === 'em_acompanhamento' ||
+              payload.new.status === 'concluido'
+            ) {
               setChamadaAtiva(false)
+              navigate('/acompanhamento')
             }
           }
         )
@@ -127,23 +136,23 @@ export default function Consulta() {
           </h1>
 
           <p className="text-[#5a8a72] text-sm mb-8 leading-relaxed">
-            Sua solicitação de acolhimento social foi enviada. Aguarde nesta tela; um assistente social iniciará o atendimento em instantes.
+            Sua solicitação de acolhimento social está registrada. Quando um assistente social iniciar o atendimento por vídeo, a chamada será liberada automaticamente.
           </p>
 
           <div className="bg-[#111f1a] border border-[#1e3b2e] rounded-2xl p-5 text-left mb-6">
             <p className="text-[#d4ebe0] text-sm font-medium mb-2">
-              Enquanto aguarda
+              Atendimento por vídeo
             </p>
             <p className="text-[#5a8a72] text-sm leading-relaxed">
-              Mantenha esta página aberta. Quando o atendimento começar, a chamada será liberada automaticamente.
+              Esta tela é usada apenas para a teleconferência. Para mensagens, documentos e próximos passos, acesse seu acompanhamento.
             </p>
           </div>
 
           <button
-            onClick={() => navigate('/triagem')}
+            onClick={() => navigate('/acompanhamento')}
             className="w-full border border-[#2a6b52] text-[#4ab882] py-3.5 rounded-xl text-sm font-medium hover:bg-[#1a3d30] transition-all"
           >
-            Voltar para o acolhimento
+            Voltar para Meu Acompanhamento
           </button>
         </div>
       ) : (
@@ -162,10 +171,10 @@ export default function Consulta() {
           </div>
 
           <button
-            onClick={() => setChamadaAtiva(false)}
+            onClick={() => navigate('/acompanhamento')}
             className="mt-6 text-[#5a8a72] hover:text-white underline text-sm"
           >
-            Voltar para sala de espera
+            Voltar para Meu Acompanhamento
           </button>
         </div>
       )}

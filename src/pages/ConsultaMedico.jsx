@@ -68,7 +68,7 @@ export default function ConsultaMedico() {
       return
     }
 
-    const confirmar = window.confirm('Deseja encerrar este atendimento e marcar o caso como concluído?')
+    const confirmar = window.confirm('Deseja finalizar esta chamada e manter o caso em acompanhamento?')
 
     if (!confirmar) return
 
@@ -77,7 +77,7 @@ export default function ConsultaMedico() {
     const { error } = await supabase
       .from('triagens')
       .update({
-        status: 'concluido',
+        status: 'em_acompanhamento',
       })
       .eq('id', idTriagem)
 
@@ -129,7 +129,7 @@ export default function ConsultaMedico() {
           disabled={encerrando}
           className="bg-red-900/40 text-red-400 border border-red-900 px-4 py-2 rounded-xl text-xs hover:bg-red-900/60 disabled:opacity-60 transition-all"
         >
-          {encerrando ? 'Encerrando...' : 'Encerrar atendimento'}
+          {encerrando ? 'Finalizando...' : 'Finalizar chamada'}
         </button>
       </div>
 

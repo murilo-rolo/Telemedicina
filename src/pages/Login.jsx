@@ -35,13 +35,13 @@ export default function Login() {
         .from('triagens')
         .select('id, status')
         .eq('user_id', user.id)
-        .in('status', ['pendente', 'em_atendimento'])
+        .in('status', ['pendente', 'em_atendimento', 'em_acompanhamento', 'concluido'])
         .order('created_at', { ascending: false })
         .limit(1)
         .maybeSingle()
 
       if (triagem) {
-        navigate('/consulta')
+        navigate('/acompanhamento')
       } else {
         navigate('/triagem')
       }
