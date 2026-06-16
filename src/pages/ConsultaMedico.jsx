@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { supabase } from '../supabaseClient'
 import VideoCall from '../components/VideoCall'
+import MensagensCaso from '../components/MensagensCaso'
 
 export default function ConsultaMedico() {
   const navigate = useNavigate()
@@ -364,6 +365,12 @@ export default function ConsultaMedico() {
               Por enquanto, este registro é visual. Ele poderá virar Mensagens ou Plano de Ação na próxima etapa.
             </p>
           </div>
+
+          <MensagensCaso
+            casoId={caso?.id}
+            remetenteTipo="assistente"
+            remetenteNome="Assistente Social"
+          />
 
           <div className="bg-[#111f1a] border border-[#1e3b2e] rounded-3xl p-6">
             <h3 className="text-[#4ab882] text-xs font-bold uppercase tracking-widest mb-4">

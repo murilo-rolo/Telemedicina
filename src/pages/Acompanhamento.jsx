@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { supabase } from '../supabaseClient'
+import { supabase } from '../supabaseClient' 
+import MensagensCaso from '../components/MensagensCaso'
 
 export default function Acompanhamento() {
   const navigate = useNavigate()
@@ -302,16 +303,11 @@ export default function Acompanhamento() {
           </div>
         </div>
 
-        <div className="bg-[#111f1a] border border-[#1e3b2e] rounded-3xl p-6">
-          <h3 className="text-[#4ab882] text-xs font-bold uppercase tracking-widest mb-4">
-            Encaminhamentos
-          </h3>
-
-          <p className="text-[#5a8a72] text-sm leading-relaxed">
-            Esta área será usada para exibir orientações enviadas pela equipe de assistência social.
-            No MVP atual, ela funciona como ponto de entrada para a futura funcionalidade de plano de ação.
-          </p>
-        </div>
+        <MensagensCaso
+          casoId={caso?.id}
+          remetenteTipo="cidadao"
+          remetenteNome={nomeUsuario || 'Cidadão'}
+        />
       </div>
     </div>
   )
