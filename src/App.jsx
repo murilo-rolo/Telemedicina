@@ -3,8 +3,9 @@ import Login from './pages/Login'
 import Cadastro from './pages/Cadastro'
 import Triagem from './pages/Triagem'
 import Consulta from './pages/Consulta'
-import DashboardMedico from './pages/DashboardMedico' // Novo!
-import ConsultaMedico from './pages/ConsultaMedico'   // Novo!
+import Acompanhamento from './pages/Acompanhamento'
+import DashboardMedico from './pages/DashboardMedico'
+import ConsultaMedico from './pages/ConsultaMedico'
 
 export default function App() {
   return (
@@ -14,8 +15,9 @@ export default function App() {
         <Route path="/cadastro" element={<Cadastro />} />
         <Route path="/triagem" element={<Triagem />} />
         <Route path="/consulta" element={<Consulta />} />
-        <Route path="/dashboard-medico" element={<DashboardMedico />} /> {/* Novo! */}
-        <Route path="/consulta-medica" element={<ConsultaMedico />} />   {/* Novo! */}
+        <Route path="/acompanhamento" element={<Acompanhamento />} />
+        <Route path="/dashboard-medico" element={<DashboardMedico />} />
+        <Route path="/consulta-medica" element={<ConsultaMedico />} />
       </Routes>
     </BrowserRouter>
   )
