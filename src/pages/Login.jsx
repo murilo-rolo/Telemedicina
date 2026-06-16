@@ -12,8 +12,10 @@ export default function Login() {
     e.preventDefault()
     setCarregando(true)
 
+    const emailNormalizado = email.trim().toLowerCase()
+
     const { data: { user }, error } = await supabase.auth.signInWithPassword({
-      email,
+      email: emailNormalizado,
       password: senha,
     })
 
@@ -23,22 +25,28 @@ export default function Login() {
       return
     }
 
-    if (email === 'medico@telesaude.com') {
+    if (
+      emailNormalizado === 'medico@telesaude.com' ||
+      emailNormalizado === 'assistente@elosocial.com'
+    ) {
       navigate('/dashboard-medico')
     } else {
       const { data: triagem } = await supabase
         .from('triagens')
-        .select('id')
+        .select('id, status')
         .eq('user_id', user.id)
-        .eq('status', 'pendente')
-        .single()
+        .in('status', ['pendente', 'em_atendimento'])
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle()
 
       if (triagem) {
-        navigate('/consulta') 
+        navigate('/consulta')
       } else {
-        navigate('/triagem') 
+        navigate('/triagem')
       }
     }
+
     setCarregando(false)
   }
 
@@ -52,8 +60,8 @@ export default function Login() {
               <path d="M8 12h8M12 8v8"/>
             </svg>
           </div>
-          <h1 className="text-[#e8f0ec] text-2xl font-semibold tracking-tight" style={{fontFamily:'Georgia, serif'}}>TeleSaúde</h1>
-          <p className="text-[#5a8a72] text-sm mt-1 font-light">Acesso remoto à saúde</p>
+          <h1 className="text-[#e8f0ec] text-2xl font-semibold tracking-tight" style={{fontFamily:'Georgia, serif'}}>EloSocial</h1>
+          <p className="text-[#5a8a72] text-sm mt-1 font-light">Conectando cidadãos e assistentes sociais</p>
         </div>
 
         <form onSubmit={lidarComLogin} className="bg-[#111f1a] border border-[#1e3b2e] rounded-2xl p-8 shadow-2xl">
