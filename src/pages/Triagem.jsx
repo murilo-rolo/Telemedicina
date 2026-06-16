@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { supabase } from '../supabaseClient'
 
 export default function Triagem() {
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+  const modoEdicao = searchParams.get('editar') === '1'
 
   const [situacoesMarcadas, setSituacoesMarcadas] = useState([])
   const [demandaPrincipal, setDemandaPrincipal] = useState('')
@@ -15,10 +17,26 @@ export default function Triagem() {
   const [rendaFamiliar, setRendaFamiliar] = useState('')
   const [detalhes, setDetalhes] = useState('')
   const [enviando, setEnviando] = useState(false)
-  const [cidadaoNome, setCidadaoNome] = useState('Carregando nome...')
+  const [carregando, setCarregando] = useState(true)
+  const [cidadaoNome, setCidadaoNome] = useState('Cidadão')
+  const [casoExistente, setCasoExistente] = useState(null)
+
+  const situacoesSociais = [
+    'Há risco de violência doméstica ou familiar',
+    'A família está sem alimento no momento',
+    'Há criança ou adolescente em situação de risco',
+    'Há idoso ou pessoa com deficiência em situação de risco',
+    'A família está sem moradia ou em risco de despejo',
+    'Há pessoa doente sem acompanhamento ou medicação',
+    'A família está sem renda',
+    'Precisa atualizar CadÚnico ou benefício social',
+    'Precisa de orientação sobre documentação',
+  ]
 
   useEffect(() => {
-    const buscarUsuarioLogado = async () => {
+    const buscarDadosIniciais = async () => {
+      setCarregando(true)
+
       const { data: { user } } = await supabase.auth.getUser()
 
       if (!user) {
@@ -30,13 +48,78 @@ export default function Triagem() {
         .from('perfis')
         .select('nome')
         .eq('id', user.id)
-        .single()
+        .maybeSingle()
 
-      if (perfil) setCidadaoNome(perfil.nome)
+      if (perfil?.nome) {
+        setCidadaoNome(perfil.nome)
+      } else {
+        setCidadaoNome(user.email || 'Cidadão')
+      }
+
+      const { data: casoAtual, error } = await supabase
+        .from('triagens')
+        .select('*')
+        .eq('user_id', user.id)
+        .in('status', ['pendente', 'em_atendimento', 'em_acompanhamento'])
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle()
+
+      if (error) {
+        alert('Erro ao buscar acolhimento existente: ' + error.message)
+        setCarregando(false)
+        return
+      }
+
+      if (casoAtual) {
+        setCasoExistente(casoAtual)
+
+        if (modoEdicao) {
+          carregarCasoNoFormulario(casoAtual)
+        }
+      }
+
+      setCarregando(false)
     }
 
-    buscarUsuarioLogado()
-  }, [navigate])
+    buscarDadosIniciais()
+  }, [navigate, modoEdicao])
+
+  const extrairCampoDoResumo = (texto, nomeCampo) => {
+    if (!texto) return ''
+
+    const linhas = texto.split('\n')
+    const linha = linhas.find((item) => item.toLowerCase().startsWith(nomeCampo.toLowerCase()))
+
+    if (!linha) return ''
+
+    return linha.split(':').slice(1).join(':').trim().replace('Não informado', '')
+  }
+
+  const extrairDescricaoDoResumo = (texto) => {
+    if (!texto) return ''
+
+    const marcador = 'Descrição do cidadão:'
+    const indice = texto.indexOf(marcador)
+
+    if (indice === -1) return texto
+
+    return texto.slice(indice + marcador.length).trim().replace('Não informado', '')
+  }
+
+  const carregarCasoNoFormulario = (caso) => {
+    const dados = Array.isArray(caso.sintomas) ? caso.sintomas : []
+
+    setDemandaPrincipal(dados[0] || '')
+    setSituacoesMarcadas(dados.slice(1))
+    setUrgencia(caso.duracao || 'baixa')
+    setTelefone(extrairCampoDoResumo(caso.detalhes, 'Telefone para contato'))
+    setEndereco(extrairCampoDoResumo(caso.detalhes, 'Endereço/bairro'))
+    setCartaoSus(extrairCampoDoResumo(caso.detalhes, 'Cartão SUS/NIS'))
+    setComposicaoFamiliar(extrairCampoDoResumo(caso.detalhes, 'Composição familiar'))
+    setRendaFamiliar(extrairCampoDoResumo(caso.detalhes, 'Renda familiar aproximada'))
+    setDetalhes(extrairDescricaoDoResumo(caso.detalhes))
+  }
 
   const lidarComSituacao = (situacao) => {
     if (situacoesMarcadas.includes(situacao)) {
@@ -116,11 +199,43 @@ ${detalhes || 'Não informado'}
       return
     }
 
+    const prioridadeCalculada = calcularPrioridade()
+    const resumoDoCaso = montarResumoDoCaso()
+
+    const dadosSociais = [
+      demandaPrincipal,
+      ...situacoesMarcadas,
+    ].filter(Boolean)
+
+    if (modoEdicao && casoExistente) {
+      const { error } = await supabase
+        .from('triagens')
+        .update({
+          paciente_nome: cidadaoNome,
+          sintomas: dadosSociais,
+          duracao: urgencia,
+          detalhes: resumoDoCaso,
+          prioridade: prioridadeCalculada,
+        })
+        .eq('id', casoExistente.id)
+
+      setEnviando(false)
+
+      if (error) {
+        alert('Erro ao atualizar acolhimento: ' + error.message)
+        return
+      }
+
+      alert('Acolhimento atualizado com sucesso.')
+      navigate('/acompanhamento')
+      return
+    }
+
     const { data: solicitacaoExistente, error: erroBusca } = await supabase
       .from('triagens')
       .select('id, status')
       .eq('user_id', user.id)
-      .in('status', ['pendente', 'em_atendimento'])
+      .in('status', ['pendente', 'em_atendimento', 'em_acompanhamento'])
       .order('created_at', { ascending: false })
       .limit(1)
       .maybeSingle()
@@ -132,19 +247,11 @@ ${detalhes || 'Não informado'}
     }
 
     if (solicitacaoExistente) {
-      alert('Você já possui uma solicitação em andamento. Vamos te levar para a fila de atendimento.')
+      alert('Você já possui um caso social em andamento. Vamos te levar para o acompanhamento.')
       setEnviando(false)
       navigate('/acompanhamento')
       return
     }
-
-    const prioridadeCalculada = calcularPrioridade()
-    const resumoDoCaso = montarResumoDoCaso()
-
-    const dadosSociais = [
-      demandaPrincipal,
-      ...situacoesMarcadas,
-    ].filter(Boolean)
 
     const { error } = await supabase
       .from('triagens')
@@ -169,30 +276,31 @@ ${detalhes || 'Não informado'}
     }
   }
 
-  const situacoesSociais = [
-    'Há risco de violência doméstica ou familiar',
-    'A família está sem alimento no momento',
-    'Há criança ou adolescente em situação de risco',
-    'Há idoso ou pessoa com deficiência em situação de risco',
-    'A família está sem moradia ou em risco de despejo',
-    'Há pessoa doente sem acompanhamento ou medicação',
-    'A família está sem renda',
-    'Precisa atualizar CadÚnico ou benefício social',
-    'Precisa de orientação sobre documentação',
-  ]
+  if (carregando) {
+    return (
+      <div className="min-h-screen bg-[#0d1f1a] flex items-center justify-center px-6 py-10 font-sans">
+        <div className="text-center animate-fadeUp">
+          <div className="w-12 h-12 border-2 border-[#2a6b52] border-t-[#4ab882] rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-[#5a8a72] text-sm">Carregando acolhimento...</p>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-[#0d1f1a] flex items-center justify-center px-6 py-10 font-sans">
       <div className="w-full max-w-3xl animate-fadeUp">
         <div className="text-center mb-8">
           <h1 className="text-[#e8f0ec] text-2xl font-semibold tracking-tight" style={{fontFamily:'Georgia, serif'}}>
-            Acolhimento Social
+            {modoEdicao ? 'Editar Acolhimento Social' : 'Acolhimento Social'}
           </h1>
           <p className="text-[#4ab882] text-sm mt-1 font-medium">
             Cidadão: {cidadaoNome}
           </p>
           <p className="text-[#5a8a72] text-sm mt-3 font-light max-w-2xl mx-auto">
-            Preencha as informações abaixo para que a equipe de assistência social possa entender a situação e organizar o atendimento.
+            {modoEdicao
+              ? 'Atualize as informações do seu caso para manter a equipe de assistência social informada.'
+              : 'Preencha as informações abaixo para que a equipe de assistência social possa entender a situação e organizar o atendimento.'}
           </p>
         </div>
 
@@ -338,13 +446,27 @@ ${detalhes || 'Não informado'}
             ></textarea>
           </div>
 
-          <button
-            type="submit"
-            disabled={enviando || !demandaPrincipal || !detalhes}
-            className="w-full bg-[#1e7a52] hover:bg-[#22905f] disabled:bg-[#1a3330] disabled:text-[#4a7a60] text-[#e8f5ee] py-3.5 rounded-xl text-sm font-medium transition-all shadow-lg"
-          >
-            {enviando ? 'Enviando solicitação...' : 'Enviar para Acolhimento Social'}
-          </button>
+          <div className="flex flex-col sm:flex-row gap-3">
+            <button
+              type="submit"
+              disabled={enviando || !demandaPrincipal || !detalhes}
+              className="flex-1 bg-[#1e7a52] hover:bg-[#22905f] disabled:bg-[#1a3330] disabled:text-[#4a7a60] text-[#e8f5ee] py-3.5 rounded-xl text-sm font-medium transition-all shadow-lg"
+            >
+              {enviando
+                ? (modoEdicao ? 'Salvando alterações...' : 'Enviando solicitação...')
+                : (modoEdicao ? 'Salvar alterações' : 'Enviar para Acolhimento Social')}
+            </button>
+
+            {modoEdicao && (
+              <button
+                type="button"
+                onClick={() => navigate('/acompanhamento')}
+                className="border border-[#2a6b52] text-[#4ab882] py-3.5 px-5 rounded-xl text-sm font-medium hover:bg-[#1a3d30] transition-all"
+              >
+                Cancelar
+              </button>
+            )}
+          </div>
         </form>
       </div>
     </div>
