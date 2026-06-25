@@ -2,6 +2,12 @@ import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { supabase } from '../supabaseClient'
 import VideoCall from '../components/VideoCall'
+import { 
+  User, Phone, MapPin, CreditCard, DollarSign, 
+  Users, AlertTriangle, MessageSquare, Briefcase, 
+  Lock, Video, PhoneOff, CheckCircle, ChevronLeft,
+  Activity
+} from 'lucide-react'
 
 export default function ConsultaMedico() {
   const navigate = useNavigate()
@@ -15,8 +21,6 @@ export default function ConsultaMedico() {
   const [salvando, setSalvando] = useState(false)
   const [videoAtivo, setVideoAtivo] = useState(false)
 
-  // Mantemos a sala atual do Daily por enquanto para não quebrar a integração.
-  // Depois podemos trocar para uma sala individual por caso.
   const URL_SALA = 'https://telesaude.daily.co/Sala-atendimento'
 
   useEffect(() => {
@@ -24,18 +28,7 @@ export default function ConsultaMedico() {
       setCarregando(true)
 
       if (!idTriagem) {
-        setCaso({
-          id: 'demo',
-          paciente_nome: 'Maria Oliveira (Demonstração)',
-          prioridade: 'ALTA',
-          status: 'pendente',
-          sintomas: ['Falta de alimento', 'A família está sem renda'],
-          detalhes:
-            'Caso demonstrativo para apresentação do MVP. Em um atendimento real, esta área mostra o resumo completo enviado pelo cidadão no acolhimento social.',
-          isDemo: true,
-        })
-
-        setCarregando(false)
+        navigate('/dashboard-medico')
         return
       }
 
@@ -52,11 +45,12 @@ export default function ConsultaMedico() {
       }
 
       if (!data) {
-        alert('Caso não encontrado. Voltando para o painel.')
+        alert('Caso não encontrado.')
         navigate('/dashboard-medico')
         return
       }
 
+      sessionStorage.setItem('elosocial_caso_atual', data.id)
       setCaso(data)
       setVideoAtivo(data.status === 'em_atendimento')
       setCarregando(false)
@@ -65,31 +59,17 @@ export default function ConsultaMedico() {
     buscarCaso()
   }, [idTriagem, navigate])
 
-  const atualizarStatusLocal = (novoStatus) => {
-    setCaso((casoAtual) => {
-      if (!casoAtual) return casoAtual
-
-      return {
-        ...casoAtual,
-        status: novoStatus,
-      }
-    })
+  const atualizarCasoLocal = (camposAtualizados) => {
+    setCaso((casoAtual) => ({ ...casoAtual, ...camposAtualizados }))
   }
 
   const iniciarTeleconferencia = async () => {
-    if (!caso || caso.isDemo || !idTriagem) {
-      setVideoAtivo(true)
-      return
-    }
-
+    if (!caso || !idTriagem) return
     setSalvando(true)
 
     const { error } = await supabase
       .from('triagens')
-      .update({
-        status: 'em_atendimento',
-        aguardando_video: false,
-      })
+      .update({ status: 'em_atendimento', aguardando_video: false })
       .eq('id', idTriagem)
 
     setSalvando(false)
@@ -99,28 +79,20 @@ export default function ConsultaMedico() {
       return
     }
 
-    atualizarStatusLocal('em_atendimento')
+    atualizarCasoLocal({ status: 'em_atendimento', aguardando_video: false })
     setVideoAtivo(true)
   }
 
   const finalizarChamada = async () => {
-    if (!caso || caso.isDemo || !idTriagem) {
-      setVideoAtivo(false)
-      return
-    }
-
-    const confirmar = window.confirm('Deseja finalizar esta chamada e manter o caso em acompanhamento?')
-
+    if (!caso || !idTriagem) return
+    const confirmar = window.confirm('Finalizar a chamada e manter o caso em acompanhamento?')
     if (!confirmar) return
 
     setSalvando(true)
 
     const { error } = await supabase
       .from('triagens')
-      .update({
-        status: 'em_acompanhamento',
-        aguardando_video: false,
-      })
+      .update({ status: 'em_acompanhamento', aguardando_video: false })
       .eq('id', idTriagem)
 
     setSalvando(false)
@@ -130,28 +102,20 @@ export default function ConsultaMedico() {
       return
     }
 
-    atualizarStatusLocal('em_acompanhamento')
+    atualizarCasoLocal({ status: 'em_acompanhamento', aguardando_video: false })
     setVideoAtivo(false)
   }
 
   const concluirCaso = async () => {
-    if (!caso || caso.isDemo || !idTriagem) {
-      navigate('/dashboard-medico')
-      return
-    }
-
-    const confirmar = window.confirm('Deseja concluir este caso? Ele deixará de aparecer nos casos abertos.')
-
+    if (!caso || !idTriagem) return
+    const confirmar = window.confirm('Concluir este caso social? Ele deixará de aparecer nos casos abertos.')
     if (!confirmar) return
 
     setSalvando(true)
 
     const { error } = await supabase
       .from('triagens')
-      .update({
-        status: 'concluido',
-        aguardando_video: false,
-      })
+      .update({ status: 'concluido', aguardando_video: false })
       .eq('id', idTriagem)
 
     setSalvando(false)
@@ -164,317 +128,346 @@ export default function ConsultaMedico() {
     navigate('/dashboard-medico')
   }
 
-  const registrarEncaminhamento = () => {
-    if (!encaminhamento.trim()) {
-      alert('Digite um encaminhamento antes de registrar.')
+  const registrarEncaminhamento = async () => {
+    const textoLimpo = encaminhamento.trim()
+    if (!textoLimpo) {
+      alert('Digite um encaminhamento antes de salvar.')
       return
     }
 
-    alert('Encaminhamento registrado apenas visualmente neste MVP. A funcionalidade completa poderá ser ligada ao Plano de Ação ou Mensagens.')
-  }
-
-  const abrirMensagens = () => {
-    if (!caso?.id || caso?.isDemo) {
-      alert('Mensagens não estão disponíveis para o caso demonstrativo.')
+    if (!caso?.id || !idTriagem) {
+      alert('Não foi possível identificar o caso.')
       return
     }
 
-    sessionStorage.setItem('elosocial_caso_atual', caso.id)
+    setSalvando(true)
+    const { data: { user } } = await supabase.auth.getUser()
 
-    navigate('/mensagens-assistente', {
-      state: { idTriagem: caso.id },
-    })
-  }
-
-  const abrirPlanoAcao = () => {
-    if (!caso?.id || caso?.isDemo) {
-      alert('Plano de ação não está disponível para o caso demonstrativo.')
+    if (!user) {
+      alert('Você precisa estar logado para registrar encaminhamentos.')
+      setSalvando(false)
       return
     }
 
-    sessionStorage.setItem('elosocial_caso_atual', caso.id)
+    const { error } = await supabase
+      .from('plano_acao_itens')
+      .insert([{
+        caso_id: idTriagem,
+        titulo: 'Encaminhamento do atendimento',
+        descricao: textoLimpo,
+        responsavel: 'cidadao',
+        status: 'pendente',
+        criado_por_id: user.id,
+        criado_por_tipo: 'assistente',
+      }])
 
-    navigate('/plano-acao-assistente', {
-      state: { idTriagem: caso.id },
-    })
-  }
+    setSalvando(false)
 
-  const abrirCofreDigital = () => {
-    if (!caso?.id || caso?.isDemo) {
-      alert('Cofre digital não está disponível para o caso demonstrativo.')
+    if (error) {
+      alert('Erro ao salvar encaminhamento: ' + error.message)
       return
     }
 
-    sessionStorage.setItem('elosocial_caso_atual', caso.id)
-
-    navigate('/cofre-digital-assistente', {
-      state: { idTriagem: caso.id },
-    })
+    setEncaminhamento('')
+    alert('Encaminhamento salvo no plano de ação.')
   }
 
-  const formatarSituacoes = (situacoes) => {
-    if (Array.isArray(situacoes)) {
-      return situacoes.join(', ')
-    }
+  // Navegação
+  const abrirMensagens = () => navigate('/mensagens-assistente', { state: { idTriagem: caso.id } })
+  const abrirPlanoAcao = () => navigate('/plano-acao-assistente', { state: { idTriagem: caso.id } })
+  const abrirCofreDigital = () => navigate('/cofre-digital-assistente', { state: { idTriagem: caso.id } })
 
-    if (situacoes) {
-      return situacoes
-    }
+  // Extratores
+  const formatarSituacoes = (situacoes) => Array.isArray(situacoes) ? situacoes.join(', ') : situacoes || 'Não informado'
 
-    return 'Não informado'
+  const extrairCampoDoResumo = (texto, nomeCampo) => {
+    if (!texto) return ''
+    const linha = texto.split('\n').find((item) => item.toLowerCase().startsWith(nomeCampo.toLowerCase()))
+    return linha ? linha.split(':').slice(1).join(':').trim() : ''
   }
 
+  const extrairBlocoDoResumo = (texto, inicio, fim) => {
+    if (!texto) return ''
+    const indiceInicio = texto.indexOf(inicio)
+    if (indiceInicio === -1) return ''
+    
+    const textoDepois = texto.slice(indiceInicio + inicio.length)
+    const indiceFim = fim ? textoDepois.indexOf(fim) : -1
+    return indiceFim === -1 ? textoDepois.trim() : textoDepois.slice(0, indiceFim).trim()
+  }
+
+  const obterDadosAcolhimento = (detalhes) => {
+    const situacoesTexto = extrairBlocoDoResumo(detalhes, 'Situações marcadas:', 'Descrição do cidadão:')
+    const situacoes = situacoesTexto
+      .split('\n')
+      .map((item) => item.replace(/^-\s*/, '').trim())
+      .filter(Boolean)
+      .filter((item) => item !== 'Nenhuma situação específica marcada')
+
+    return {
+      demandaPrincipal: extrairCampoDoResumo(detalhes, 'Demanda principal'),
+      urgencia: extrairCampoDoResumo(detalhes, 'Nível de urgência informado'),
+      pontuacao: extrairCampoDoResumo(detalhes, 'Pontuação de risco social'),
+      telefone: extrairCampoDoResumo(detalhes, 'Telefone para contato'),
+      endereco: extrairCampoDoResumo(detalhes, 'Endereço/bairro'),
+      cartaoSus: extrairCampoDoResumo(detalhes, 'Cartão SUS/NIS'),
+      composicaoFamiliar: extrairCampoDoResumo(detalhes, 'Composição familiar'),
+      rendaFamiliar: extrairCampoDoResumo(detalhes, 'Renda familiar aproximada'),
+      situacoes,
+      relato: extrairBlocoDoResumo(detalhes, 'Descrição do cidadão:'),
+    }
+  }
+
+  // Componente Visual Melhorado
+  const CardAcolhimento = ({ titulo, valor, Icone }) => (
+    <div className="bg-[#11211C] border border-[#1A332A] rounded-2xl p-4 transition-all hover:border-[#24473B]">
+      <div className="flex items-center gap-2 mb-2">
+        {Icone && <Icone size={14} className="text-[#4ade80] opacity-80" />}
+        <p className="text-[#7A9C8D] text-[10px] font-semibold uppercase tracking-wider">
+          {titulo}
+        </p>
+      </div>
+      <p className="text-[#E2E8F0] text-sm leading-relaxed font-medium">
+        {valor || 'Não informado'}
+      </p>
+    </div>
+  )
+
+  // Cores Modernas com Opacidade
   const obterCorPrioridade = (prioridade) => {
-    if (prioridade === 'ALTA') return 'bg-red-500'
-    if (prioridade === 'MÉDIA') return 'bg-yellow-500'
-    return 'bg-green-500'
+    if (prioridade === 'ALTA') return 'bg-red-500/10 text-red-400 border-red-500/20'
+    if (prioridade === 'MÉDIA') return 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20'
+    return 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
   }
 
-  const obterTextoStatus = (status) => {
-    if (status === 'pendente') return 'Pendente'
-    if (status === 'em_atendimento') return 'Em atendimento'
-    if (status === 'em_acompanhamento') return 'Em acompanhamento'
-    if (status === 'concluido') return 'Concluído'
-    return 'Não informado'
-  }
-
-  const obterCorStatus = (status) => {
-    if (status === 'pendente') return 'bg-yellow-500/20 text-yellow-300 border-yellow-600/40'
-    if (status === 'em_atendimento') return 'bg-blue-500/20 text-blue-300 border-blue-600/40'
-    if (status === 'em_acompanhamento') return 'bg-[#4ab882]/20 text-[#4ab882] border-[#2a6b52]'
-    return 'bg-gray-500/20 text-gray-300 border-gray-600/40'
+  const obterStatusBadge = (status) => {
+    const config = {
+      pendente: { texto: 'Pendente', cor: 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20' },
+      em_atendimento: { texto: 'Em atendimento', cor: 'bg-blue-500/10 text-blue-400 border-blue-500/20' },
+      em_acompanhamento: { texto: 'Em acompanhamento', cor: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' },
+      concluido: { texto: 'Concluído', cor: 'bg-slate-500/10 text-slate-400 border-slate-500/20' }
+    }
+    const atual = config[status] || { texto: 'Não informado', cor: 'bg-slate-500/10 text-slate-400 border-slate-500/20' }
+    
+    return (
+      <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold border tracking-wide ${atual.cor}`}>
+        {atual.texto}
+      </span>
+    )
   }
 
   if (carregando) {
     return (
-      <div className="min-h-screen bg-[#0d1f1a] flex items-center justify-center px-6 py-10 font-sans">
-        <div className="text-center animate-fadeUp">
-          <div className="w-12 h-12 border-2 border-[#2a6b52] border-t-[#4ab882] rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-[#5a8a72] text-sm">Carregando caso social...</p>
+      <div className="min-h-screen bg-[#0B1511] flex items-center justify-center font-sans">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-10 h-10 border-2 border-[#1A332A] border-t-[#4ade80] rounded-full animate-spin"></div>
+          <p className="text-[#7A9C8D] text-sm font-medium tracking-wide">Carregando contexto social...</p>
         </div>
       </div>
     )
   }
 
+  const dadosAcolhimento = obterDadosAcolhimento(caso?.detalhes || '')
+
   return (
-    <div className="min-h-screen bg-[#0d1f1a] font-sans">
-      <div className="border-b border-[#1e3b2e] bg-[#111f1a] px-6 py-4">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <div>
-            <p className="text-[#4ab882] text-xs uppercase tracking-wider font-medium mb-1">
-              EloSocial
-            </p>
-            <h1 className="text-[#e8f0ec] text-xl font-semibold" style={{fontFamily:'Georgia, serif'}}>
-              Detalhes do Caso Social
-            </h1>
-            <p className="text-[#5a8a72] text-sm mt-1">
-              Atendimento, resumo, encaminhamentos e recursos do acompanhamento.
-            </p>
-          </div>
-
-          <div className="flex flex-wrap gap-3">
-            <button
+    <div className="min-h-screen bg-[#0B1511] text-slate-200 font-sans selection:bg-[#4ade80]/30">
+      
+      {/* Header Fixo e Minimalista */}
+      <header className="sticky top-0 z-10 bg-[#0B1511]/80 backdrop-blur-md border-b border-[#1A332A] px-6 py-4">
+        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <button 
               onClick={() => navigate('/dashboard-medico')}
-              className="border border-[#2a6b52] text-[#4ab882] px-4 py-2 rounded-xl text-xs hover:bg-[#1a3d30] transition-all"
+              className="p-2 -ml-2 rounded-xl text-[#7A9C8D] hover:text-white hover:bg-[#11211C] transition-colors"
             >
-              Voltar ao painel
+              <ChevronLeft size={20} />
             </button>
-
-            <button
-              onClick={concluirCaso}
-              disabled={salvando}
-              className="bg-red-900/40 text-red-400 border border-red-900 px-4 py-2 rounded-xl text-xs hover:bg-red-900/60 disabled:opacity-60 transition-all"
-            >
-              Concluir caso
-            </button>
+            <div>
+              <p className="text-[#4ade80] text-[10px] uppercase tracking-widest font-bold mb-0.5">
+                Plataforma EloSocial
+              </p>
+              <h1 className="text-xl font-bold tracking-tight text-white">
+                Prontuário Social
+              </h1>
+            </div>
           </div>
-        </div>
-      </div>
 
-      <div className="max-w-7xl mx-auto p-6 grid lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 space-y-6">
-          <div className="bg-[#111f1a] border border-[#1e3b2e] rounded-3xl p-6">
-            <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-6">
+          <button
+            onClick={concluirCaso}
+            disabled={salvando || caso?.status === 'concluido'}
+            className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold border border-red-500/20 text-red-400 bg-red-500/5 hover:bg-red-500/10 disabled:opacity-40 transition-all"
+          >
+            <CheckCircle size={16} />
+            Encerrar Caso
+          </button>
+        </div>
+      </header>
+
+      <main className="max-w-7xl mx-auto p-6 grid lg:grid-cols-12 gap-6 items-start">
+        
+        {/* Coluna Principal (Esquerda) */}
+        <div className="lg:col-span-8 space-y-6">
+          
+          {/* Card de Identificação */}
+          <section className="bg-[#11211C] border border-[#1A332A] rounded-3xl p-6 md:p-8">
+            <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-8">
               <div>
-                <h2 className="text-[#e8f0ec] text-2xl font-semibold" style={{fontFamily:'Georgia, serif'}}>
+                <h2 className="text-3xl font-bold text-white tracking-tight mb-3">
                   {caso?.paciente_nome || 'Cidadão não identificado'}
                 </h2>
-                <p className="text-[#5a8a72] text-sm mt-1">
-                  Caso social aberto no EloSocial
-                </p>
-              </div>
-
-              <div className="flex flex-wrap gap-2">
-                <span className={`inline-block px-2 py-1 rounded-md text-[10px] font-bold text-white ${obterCorPrioridade(caso?.prioridade)}`}>
-                  {caso?.prioridade || 'BAIXA'}
-                </span>
-
-                <span className={`inline-block border px-2 py-1 rounded-md text-[10px] font-bold ${obterCorStatus(caso?.status)}`}>
-                  {obterTextoStatus(caso?.status)}
-                </span>
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold border tracking-wide ${obterCorPrioridade(caso?.prioridade)}`}>
+                    Prioridade {caso?.prioridade || 'BAIXA'}
+                  </span>
+                  {obterStatusBadge(caso?.status)}
+                  {caso?.aguardando_video && (
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold border border-blue-500/20 bg-blue-500/10 text-blue-400">
+                      <Video size={10} /> Aguardando Vídeo
+                    </span>
+                  )}
+                </div>
               </div>
             </div>
 
-            <h3 className="text-[#4ab882] text-xs font-bold uppercase tracking-widest mb-4">
-              Resumo do acolhimento
-            </h3>
-
-            <div className="space-y-4">
+            <div className="space-y-8">
               <div>
-                <p className="text-[#5a8a72] text-xs uppercase tracking-wider mb-1">
-                  Demanda / Situações
-                </p>
-                <p className="text-[#c8e0d4] text-sm leading-relaxed">
-                  {formatarSituacoes(caso?.sintomas)}
-                </p>
-              </div>
-
-              <div>
-                <p className="text-[#5a8a72] text-xs uppercase tracking-wider mb-1">
-                  Detalhes do caso
-                </p>
-                <pre className="text-[#c8e0d4] text-xs leading-relaxed whitespace-pre-wrap font-sans bg-[#0d1f1a] border border-[#1e3b2e] rounded-2xl p-4 max-h-80 overflow-y-auto">
-                  {caso?.detalhes || 'Nenhum detalhe informado.'}
-                </pre>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-[#111f1a] border border-[#1e3b2e] rounded-3xl p-6">
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
-              <div>
-                <h3 className="text-[#4ab882] text-xs font-bold uppercase tracking-widest">
-                  Teleconferência
+                <h3 className="text-[#7A9C8D] text-xs font-bold uppercase tracking-widest mb-4 flex items-center gap-2">
+                  <User size={14} className="text-[#4ade80]" />
+                  Mapeamento de Dados
                 </h3>
-                <p className="text-[#5a8a72] text-sm mt-2">
-                  A videochamada é uma ferramenta do caso, não o fim do acompanhamento.
-                </p>
+                <div className="grid sm:grid-cols-2 gap-3">
+                  <CardAcolhimento titulo="Demanda principal" valor={dadosAcolhimento.demandaPrincipal || formatarSituacoes(caso?.sintomas)} Icone={AlertTriangle} />
+                  <CardAcolhimento titulo="Urgência informada" valor={dadosAcolhimento.urgencia} Icone={Activity} />
+                  <CardAcolhimento titulo="Telefone" valor={dadosAcolhimento.telefone} Icone={Phone} />
+                  <CardAcolhimento titulo="Endereço / Bairro" valor={dadosAcolhimento.endereco} Icone={MapPin} />
+                  <CardAcolhimento titulo="Cartão SUS / NIS" valor={dadosAcolhimento.cartaoSus} Icone={CreditCard} />
+                  <CardAcolhimento titulo="Renda Familiar" valor={dadosAcolhimento.rendaFamiliar} Icone={DollarSign} />
+                  <CardAcolhimento titulo="Composição Familiar" valor={dadosAcolhimento.composicaoFamiliar} Icone={Users} />
+                  <CardAcolhimento titulo="Risco Social" valor={dadosAcolhimento.pontuacao} Icone={AlertTriangle} />
+                </div>
               </div>
+
+              {dadosAcolhimento.situacoes.length > 0 && (
+                <div>
+                  <h3 className="text-[#7A9C8D] text-xs font-bold uppercase tracking-widest mb-4">
+                    Vulnerabilidades Mapeadas
+                  </h3>
+                  <div className="flex flex-wrap gap-2">
+                    {dadosAcolhimento.situacoes.map((situacao) => (
+                      <span key={situacao} className="bg-[#1A332A] text-[#4ade80] px-3.5 py-1.5 rounded-lg text-xs font-medium border border-[#24473B]">
+                        {situacao}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {dadosAcolhimento.relato && (
+                <div>
+                  <h3 className="text-[#7A9C8D] text-xs font-bold uppercase tracking-widest mb-4 flex items-center gap-2">
+                    <MessageSquare size={14} className="text-[#4ade80]" />
+                    Relato Direto
+                  </h3>
+                  <div className="bg-[#0B1511] border border-[#1A332A] rounded-2xl p-5">
+                    <p className="text-[#A0BDB0] text-sm leading-relaxed whitespace-pre-wrap italic">
+                      "{dadosAcolhimento.relato}"
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
+          </section>
+
+          {/* Seção de Vídeo */}
+          <section className="bg-[#11211C] border border-[#1A332A] rounded-3xl p-6 md:p-8">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+              <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                <Video className="text-[#4ade80]" /> Sala de Atendimento
+              </h3>
 
               {!videoAtivo ? (
                 <button
                   onClick={iniciarTeleconferencia}
                   disabled={salvando || caso?.status === 'concluido'}
-                  className="bg-[#1e7a52] hover:bg-[#22905f] disabled:bg-[#1a3330] disabled:text-[#4a7a60] text-[#e8f5ee] px-4 py-3 rounded-xl text-sm font-medium transition-all"
+                  className="flex items-center justify-center gap-2 bg-[#4ade80] text-[#0B1511] hover:bg-[#22c55e] disabled:bg-[#1A332A] disabled:text-[#7A9C8D] px-6 py-2.5 rounded-xl text-sm font-bold transition-all shadow-[0_0_15px_rgba(74,222,128,0.15)] hover:shadow-[0_0_25px_rgba(74,222,128,0.25)]"
                 >
-                  {salvando ? 'Iniciando...' : 'Iniciar teleconferência'}
+                  <Video size={16} /> {salvando ? 'Conectando...' : 'Iniciar Chamada'}
                 </button>
               ) : (
                 <button
                   onClick={finalizarChamada}
                   disabled={salvando}
-                  className="bg-red-900/40 text-red-400 border border-red-900 px-4 py-3 rounded-xl text-sm hover:bg-red-900/60 disabled:opacity-60 transition-all"
+                  className="flex items-center justify-center gap-2 border border-red-500/30 text-red-400 bg-red-500/10 px-6 py-2.5 rounded-xl text-sm font-bold hover:bg-red-500/20 transition-all"
                 >
-                  {salvando ? 'Finalizando...' : 'Finalizar chamada'}
+                  <PhoneOff size={16} /> {salvando ? 'Encerrando...' : 'Finalizar Chamada'}
                 </button>
               )}
             </div>
 
             {videoAtivo ? (
-              <div className="h-[520px] bg-black rounded-2xl overflow-hidden">
+              <div className="h-[500px] bg-[#050A08] border border-[#1A332A] rounded-2xl overflow-hidden ring-4 ring-[#4ade80]/10">
                 <VideoCall url={URL_SALA} userName="Assistente Social" />
               </div>
             ) : (
-              <div className="border border-[#1e3b2e] bg-[#0d1f1a] rounded-2xl p-6">
-                <p className="text-[#c8e0d4] text-sm font-medium mb-2">
-                  Chamada não iniciada
-                </p>
-                <p className="text-[#5a8a72] text-sm leading-relaxed">
-                  Clique em “Iniciar teleconferência” quando o atendimento por vídeo for necessário.
-                  O cidadão poderá entrar pela área “Meu Acompanhamento”.
-                </p>
+              <div className="h-48 border border-dashed border-[#24473B] bg-[#0B1511] rounded-2xl flex flex-col items-center justify-center text-center p-6">
+                <div className="w-12 h-12 rounded-full bg-[#1A332A] flex items-center justify-center mb-3 text-[#7A9C8D]">
+                  <Video size={20} />
+                </div>
+                <p className="text-[#7A9C8D] text-sm font-medium">A câmera e o microfone estão desativados.</p>
+                <p className="text-[#4A6B5C] text-xs mt-1">Inicie a chamada para abrir a sala segura.</p>
               </div>
             )}
-          </div>
+          </section>
+
         </div>
 
-        <div className="space-y-6">
-          <div className="bg-[#111f1a] border border-[#1e3b2e] rounded-3xl p-6">
-            <h3 className="text-[#4ab882] text-xs font-bold uppercase tracking-widest mb-4">
-              Encaminhamento
-            </h3>
+        {/* Coluna Lateral (Direita) */}
+        <div className="lg:col-span-4 space-y-6">
+          
+          {/* Ações Rápidas */}
+          <section className="bg-[#11211C] border border-[#1A332A] rounded-3xl p-6">
+            <h3 className="text-[#7A9C8D] text-xs font-bold uppercase tracking-widest mb-4">Ferramentas</h3>
+            <div className="space-y-3">
+              <button onClick={abrirMensagens} className="w-full group flex items-center gap-3 border border-[#1A332A] rounded-2xl p-4 bg-[#0B1511] hover:border-[#4ade80]/50 hover:bg-[#142921] transition-all">
+                <div className="bg-[#1A332A] p-2 rounded-lg group-hover:bg-[#4ade80]/20 group-hover:text-[#4ade80] text-[#7A9C8D] transition-colors"><MessageSquare size={18} /></div>
+                <div className="text-left"><p className="text-sm font-semibold text-white">Mensagens</p><p className="text-[10px] text-[#7A9C8D] mt-0.5">Chat com o cidadão</p></div>
+              </button>
 
+              <button onClick={abrirPlanoAcao} className="w-full group flex items-center gap-3 border border-[#1A332A] rounded-2xl p-4 bg-[#0B1511] hover:border-[#4ade80]/50 hover:bg-[#142921] transition-all">
+                <div className="bg-[#1A332A] p-2 rounded-lg group-hover:bg-[#4ade80]/20 group-hover:text-[#4ade80] text-[#7A9C8D] transition-colors"><Briefcase size={18} /></div>
+                <div className="text-left"><p className="text-sm font-semibold text-white">Plano de Ação</p><p className="text-[10px] text-[#7A9C8D] mt-0.5">Metas e encaminhamentos</p></div>
+              </button>
+
+              <button onClick={abrirCofreDigital} className="w-full group flex items-center gap-3 border border-[#1A332A] rounded-2xl p-4 bg-[#0B1511] hover:border-[#4ade80]/50 hover:bg-[#142921] transition-all">
+                <div className="bg-[#1A332A] p-2 rounded-lg group-hover:bg-[#4ade80]/20 group-hover:text-[#4ade80] text-[#7A9C8D] transition-colors"><Lock size={18} /></div>
+                <div className="text-left"><p className="text-sm font-semibold text-white">Cofre Digital</p><p className="text-[10px] text-[#7A9C8D] mt-0.5">Documentos sigilosos</p></div>
+              </button>
+            </div>
+          </section>
+
+          {/* Bloco de Encaminhamento */}
+          <section className="bg-[#11211C] border border-[#1A332A] rounded-3xl p-6">
+            <h3 className="text-[#7A9C8D] text-xs font-bold uppercase tracking-widest mb-4">
+              Registro de Atendimento
+            </h3>
             <textarea
               value={encaminhamento}
               onChange={(e) => setEncaminhamento(e.target.value)}
-              className="w-full h-40 bg-[#0d1f1a] border border-[#1e3b2e] rounded-2xl p-4 text-[#c8e0d4] text-sm outline-none resize-none"
-              placeholder="Registre orientações, próximos passos, encaminhamentos ao CRAS, documentos necessários ou observações do atendimento."
+              className="w-full h-32 bg-[#0B1511] border border-[#1A332A] rounded-2xl p-4 text-sm text-[#E2E8F0] placeholder-[#4A6B5C] outline-none resize-none focus:border-[#4ade80]/50 focus:ring-1 focus:ring-[#4ade80]/50 transition-all"
+              placeholder="Descreva as orientações finais, evolução do caso ou próximos passos..."
             ></textarea>
 
             <button
               onClick={registrarEncaminhamento}
-              className="mt-4 w-full bg-[#1e7a52] text-white py-3 rounded-xl text-sm font-medium hover:bg-[#22905f]"
+              disabled={salvando || !encaminhamento.trim()}
+              className="mt-4 w-full bg-[#1A332A] hover:bg-[#24473B] text-[#4ade80] disabled:bg-[#0B1511] disabled:text-[#4A6B5C] border border-[#24473B] disabled:border-[#1A332A] py-3 rounded-xl text-sm font-bold transition-all"
             >
-              Registrar encaminhamento
+              {salvando ? 'Registrando...' : 'Salvar no Prontuário'}
             </button>
+          </section>
 
-            <p className="text-[#4a7a60] text-xs mt-3 leading-relaxed">
-              Por enquanto, este registro é visual. Ele poderá virar Mensagens ou Plano de Ação na próxima etapa.
-            </p>
-          </div>
-
-          <div className="bg-[#111f1a] border border-[#1e3b2e] rounded-3xl p-6">
-            <h3 className="text-[#4ab882] text-xs font-bold uppercase tracking-widest mb-4">
-              Recursos do caso
-            </h3>
-
-            <div className="space-y-3">
-              <button
-                onClick={abrirMensagens}
-                className="w-full text-left border border-[#1e3b2e] rounded-2xl p-4 bg-[#0d1f1a] hover:border-[#2a6b52] transition-all"
-              >
-                <p className="text-[#e8f0ec] text-sm font-medium">Mensagens</p>
-                <p className="text-[#5a8a72] text-xs mt-1">
-                  Abrir conversa salva no histórico do caso.
-                </p>
-              </button>
-
-              <button
-                type="button"
-                onClick={abrirPlanoAcao}
-                className="w-full text-left border border-[#1e3b2e] rounded-2xl p-4 bg-[#0d1f1a] hover:border-[#2a6b52] transition-all"
-              >
-                <p className="text-[#e8f0ec] text-sm font-medium">Plano de ação</p>
-                <p className="text-[#5a8a72] text-xs mt-1">
-                  Tarefas e próximos passos acompanhados pelo cidadão.
-                </p>
-              </button>
-
-              <button
-                type="button"
-                onClick={abrirCofreDigital}
-                className="w-full text-left border border-[#1e3b2e] rounded-2xl p-4 bg-[#0d1f1a] hover:border-[#2a6b52] transition-all"
-              >
-                <p className="text-[#e8f0ec] text-sm font-medium">Cofre digital</p>
-                <p className="text-[#5a8a72] text-xs mt-1">
-                  Documentos enviados pelo cidadão.
-                </p>
-              </button>
-            </div>
-          </div>
-
-          <div className="bg-[#111f1a] border border-[#1e3b2e] rounded-3xl p-6">
-            <h3 className="text-[#4ab882] text-xs font-bold uppercase tracking-widest mb-4">
-              Status do fluxo
-            </h3>
-
-            <div className="space-y-3 text-sm">
-              <p className="text-[#5a8a72]">
-                <span className="text-[#c8e0d4] font-medium">Pendente:</span> aguardando primeira ação.
-              </p>
-              <p className="text-[#5a8a72]">
-                <span className="text-[#c8e0d4] font-medium">Em atendimento:</span> videochamada ou atendimento ativo.
-              </p>
-              <p className="text-[#5a8a72]">
-                <span className="text-[#c8e0d4] font-medium">Em acompanhamento:</span> caso segue aberto após atendimento inicial.
-              </p>
-              <p className="text-[#5a8a72]">
-                <span className="text-[#c8e0d4] font-medium">Concluído:</span> caso encerrado.
-              </p>
-            </div>
-          </div>
         </div>
-      </div>
+      </main>
     </div>
   )
 }
