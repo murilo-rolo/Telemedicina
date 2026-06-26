@@ -1,6 +1,11 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "../supabaseClient";
+import {
+  montarDadosAcolhimento,
+  montarResumoAcolhimento,
+  normalizarAcolhimento,
+} from "../utils/acolhimento";
 
 import {
   AlertTriangle,
@@ -68,7 +73,6 @@ const FAIXAS_RENDA = [
   "Prefere não informar",
 ];
 
-// NOVA CONSTANTE: Opções de composição familiar
 const COMPOSICAO_FAMILIAR_OPCOES = [
   "",
   "Mora sozinho(a)",
@@ -213,8 +217,8 @@ function PainelLateral({
   situacoesCount,
   formularioValido,
   cidadaoNome,
-  progressoReal, // Recebe o progresso baseado em campos
-  onMudarEtapa, // Função para trocar de etapa ao clicar
+  progressoReal,
+  onMudarEtapa,
 }) {
   return (
     <aside className="lg:col-span-4 lg:sticky lg:top-24">
@@ -262,14 +266,14 @@ function PainelLateral({
           <div className="space-y-3 mb-7">
             {ETAPAS.map((etapa, index) => {
               const ativa = etapaAtual === index;
-              const concluida = etapaAtual > index; // Visualmente, consideramos concluídas as anteriores.
+              const concluida = etapaAtual > index;
               const Icone = etapa.Icone;
 
               return (
                 <button
                   key={etapa.titulo}
                   type="button"
-                  onClick={() => onMudarEtapa(index)} // Torna clicável
+                  onClick={() => onMudarEtapa(index)}
                   className={`w-full text-left flex items-center gap-3 rounded-2xl border px-4 py-3 transition-all hover:bg-[#0D1D18] cursor-pointer ${
                     ativa
                       ? "border-[#4ade80]/60 bg-[#4ade80]/10"
@@ -366,32 +370,6 @@ function PainelLateral({
   );
 }
 
-function extrairCampoDoResumo(texto, nomeCampo) {
-  if (!texto) return "";
-  const linha = texto
-    .split("\n")
-    .find((item) => item.toLowerCase().startsWith(nomeCampo.toLowerCase()));
-
-  if (!linha) return "";
-  return linha
-    .split(":")
-    .slice(1)
-    .join(":")
-    .trim()
-    .replace("Não informado", "");
-}
-
-function extrairDescricaoDoResumo(texto) {
-  if (!texto) return "";
-  const marcador = "Descrição do cidadão:";
-  const indice = texto.indexOf(marcador);
-  if (indice === -1) return texto;
-  return texto
-    .slice(indice + marcador.length)
-    .trim()
-    .replace("Não informado", "");
-}
-
 export default function Triagem() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -415,7 +393,9 @@ export default function Triagem() {
   const [outraSituacaoAtiva, setOutraSituacaoAtiva] = useState(false);
   const [outrasSituacoes, setOutrasSituacoes] = useState("");
   const [detalhes, setDetalhes] = useState("");
+  
   const [enviando, setEnviando] = useState(false);
+  const [salvoComSucesso, setSalvoComSucesso] = useState(false); // Novo estado de feedback visual
   const [carregando, setCarregando] = useState(true);
   const [cidadaoNome, setCidadaoNome] = useState("Cidadão");
   const [casoExistente, setCasoExistente] = useState(null);
@@ -466,46 +446,56 @@ export default function Triagem() {
   }, [navigate, modoEdicao]);
 
   const carregarCasoNoFormulario = (caso) => {
-    const dados = Array.isArray(caso.sintomas) ? caso.sintomas : [];
-    const demandaSalva = dados[0] || "";
-    const demandaExiste = DEMANDAS_PRINCIPAIS.some((item) => item.valor === demandaSalva);
+    const dados = normalizarAcolhimento(caso)
+
+    const demandaExiste = DEMANDAS_PRINCIPAIS.some(
+      (item) => item.valor === dados.demandaPrincipal
+    )
 
     if (demandaExiste) {
-      setDemandaPrincipal(demandaSalva);
-      setOutraDemanda("");
-    } else if (demandaSalva) {
-      setDemandaPrincipal("Outra necessidade");
-      setOutraDemanda(demandaSalva);
+      setDemandaPrincipal(dados.demandaPrincipal)
+      setOutraDemanda('')
+    } else if (dados.demandaPrincipal) {
+      setDemandaPrincipal('Outra necessidade')
+      setOutraDemanda(dados.demandaPrincipal)
     }
 
-    const situacoesConhecidas = dados.slice(1).filter((item) => SITUACOES_SOCIAIS.includes(item));
-    const situacoesAbertas = dados
-      .slice(1)
-      .filter((item) => item.startsWith("Outra situação informada:"))
-      .map((item) => item.replace("Outra situação informada:", "").trim())
-      .join("\n");
+    const situacoesConhecidas = dados.situacoes.filter((item) =>
+      SITUACOES_SOCIAIS.includes(item)
+    )
 
-    setSituacoesMarcadas(situacoesConhecidas);
-    setOutraSituacaoAtiva(Boolean(situacoesAbertas));
-    setOutrasSituacoes(situacoesAbertas);
-    setUrgencia(caso.duracao || "baixa");
+    const situacoesAbertas = dados.outraSituacao ||
+      dados.situacoes
+        .filter((item) => !SITUACOES_SOCIAIS.includes(item))
+        .map((item) => item.replace('Outra situação informada:', '').trim())
+        .join('\n')
 
-    setTelefone(extrairCampoDoResumo(caso.detalhes, "Telefone para contato"));
-    setIdade(extrairCampoDoResumo(caso.detalhes, "Idade"));
-    setCartaoSus(extrairCampoDoResumo(caso.detalhes, "Cartão SUS/NIS"));
-    setBairroLocalidade(extrairCampoDoResumo(caso.detalhes, "Bairro/localidade") || extrairCampoDoResumo(caso.detalhes, "Endereço/bairro"));
-    setPontoReferencia(extrairCampoDoResumo(caso.detalhes, "Ponto de referência"));
-    setTerritorioCras(extrairCampoDoResumo(caso.detalhes, "Território/CRAS") || extrairCampoDoResumo(caso.detalhes, "Território/CRAS de referência"));
-    setComposicaoFamiliar(extrairCampoDoResumo(caso.detalhes, "Composição familiar"));
-    setRendaFamiliar(extrairCampoDoResumo(caso.detalhes, "Renda familiar") || extrairCampoDoResumo(caso.detalhes, "Renda familiar aproximada"));
-    
-    const beneficiosTexto = extrairCampoDoResumo(caso.detalhes, "Benefícios sociais");
-    const beneficiosSalvos = beneficiosTexto ? beneficiosTexto.split(",").map((item) => item.trim()).filter(Boolean) : [];
-    
-    setBeneficios(beneficiosSalvos.filter((item) => BENEFICIOS_SOCIAIS.includes(item)));
-    setOutrosBeneficios(extrairCampoDoResumo(caso.detalhes, "Outros benefícios"));
-    setDetalhes(extrairDescricaoDoResumo(caso.detalhes));
-  };
+    setSituacoesMarcadas(situacoesConhecidas)
+    setOutraSituacaoAtiva(Boolean(situacoesAbertas))
+    setOutrasSituacoes(situacoesAbertas)
+
+    setUrgencia(dados.urgencia || 'baixa')
+
+    setTelefone(dados.telefone)
+    setIdade(dados.idade)
+    setCartaoSus(dados.cartaoSus)
+
+    setBairroLocalidade(dados.bairroLocalidade)
+    setPontoReferencia(dados.pontoReferencia)
+    setTerritorioCras(dados.territorioCras)
+
+    setComposicaoFamiliar(dados.composicaoFamiliar)
+    setRendaFamiliar(dados.rendaFamiliar)
+
+    setBeneficios(
+      dados.beneficiosSociaisLista.filter((item) =>
+        BENEFICIOS_SOCIAIS.includes(item)
+      )
+    )
+
+    setOutrosBeneficios(dados.outrosBeneficios)
+    setDetalhes(dados.relato)
+  }
 
   const obterDemandaFinal = () => {
     if (demandaPrincipal === "Outra necessidade") {
@@ -578,31 +568,34 @@ export default function Triagem() {
     return "BAIXA";
   };
 
-  const montarResumoDoCaso = () => {
-    const pontuacao = calcularPontuacaoRisco();
-    const demandaFinal = obterDemandaFinal();
-    const situacoesFinais = obterSituacoesFinais();
+  const montarDadosEstruturados = () => {
+    return montarDadosAcolhimento({
+      telefone,
+      idade,
+      cartaoSus,
+      bairroLocalidade,
+      pontoReferencia,
+      territorioCras,
+      composicaoFamiliar,
+      rendaFamiliar,
+      beneficios,
+      outrosBeneficios,
+      demandaPrincipal,
+      demandaFinal: obterDemandaFinal(),
+      outraDemanda,
+      urgencia,
+      situacoesMarcadas,
+      outraSituacaoAtiva,
+      outrasSituacoes,
+      relato: detalhes,
+    })
+  }
 
-    return `
-Demanda principal: ${demandaFinal}
-Nível de urgência informado: ${urgencia}
-Pontuação de risco social: ${pontuacao}
-Telefone para contato: ${telefone || "Não informado"}
-Idade: ${idade || "Não informado"}
-Cartão SUS/NIS: ${cartaoSus || "Não informado"}
-Bairro/localidade: ${bairroLocalidade || "Não informado"}
-Ponto de referência: ${pontoReferencia || "Não informado"}
-Território/CRAS: ${territorioCras || "Não informado"}
-Composição familiar: ${composicaoFamiliar || "Não informado"}
-Renda familiar: ${rendaFamiliar || "Não informado"}
-Benefícios sociais: ${beneficios.length > 0 ? beneficios.join(", ") : "Não informado"}
-Outros benefícios: ${outrosBeneficios || "Não informado"}
-Situações marcadas:
-${situacoesFinais.length > 0 ? situacoesFinais.map((item) => `- ${item}`).join("\n") : "- Nenhuma situação específica marcada"}
-Descrição do cidadão:
-${detalhes || "Não informado"}
-`.trim();
-  };
+  const montarResumoDoCaso = (dadosAcolhimento = montarDadosEstruturados()) => {
+    const pontuacao = calcularPontuacaoRisco()
+  
+    return montarResumoAcolhimento(dadosAcolhimento, pontuacao)
+  }
 
   const formularioValido = Boolean(
     obterDemandaFinal() &&
@@ -611,23 +604,16 @@ ${detalhes || "Não informado"}
     detalhes.trim()
   );
 
-  // Calcula o progresso baseado em campos preenchidos e não apenas na etapa
   const calcularProgressoReal = () => {
-    let campos = [
+    const camposEssenciais = [
       telefone.trim() !== "",
-      idade !== "",
-      cartaoSus.trim() !== "",
       bairroLocalidade.trim() !== "",
-      composicaoFamiliar !== "",
-      rendaFamiliar !== "",
-      beneficios.length > 0,
       obterDemandaFinal() !== "",
-      situacoesMarcadas.length > 0 || (outraSituacaoAtiva && outrasSituacoes.trim() !== ""),
-      detalhes.trim() !== ""
+      detalhes.trim() !== "",
     ];
-
-    const preenchidos = campos.filter(Boolean).length;
-    return Math.round((preenchidos / campos.length) * 100);
+  
+    const preenchidos = camposEssenciais.filter(Boolean).length;
+    return Math.round((preenchidos / camposEssenciais.length) * 100);
   };
 
   const avancar = () => {
@@ -646,9 +632,10 @@ ${detalhes || "Não informado"}
   };
 
   const lidarComEnvio = async (e) => {
-    e.preventDefault();
+    if (e) e.preventDefault();
     if (!formularioValido) return;
     setEnviando(true);
+    setSalvoComSucesso(false);
 
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
@@ -658,9 +645,11 @@ ${detalhes || "Não informado"}
     }
 
     const prioridadeCalculada = calcularPrioridade();
-    const resumoDoCaso = montarResumoDoCaso();
+    const dadosAcolhimento = montarDadosEstruturados();
+    const resumoDoCaso = montarResumoDoCaso(dadosAcolhimento);
     const dadosSociais = [obterDemandaFinal(), ...obterSituacoesFinais()].filter(Boolean);
 
+    // MODO EDIÇÃO: APENAS SALVA E MANTÉM NA PÁGINA
     if (modoEdicao && casoExistente) {
       const { error } = await supabase
         .from("triagens")
@@ -670,18 +659,24 @@ ${detalhes || "Não informado"}
           duracao: urgencia,
           detalhes: resumoDoCaso,
           prioridade: prioridadeCalculada,
+          dados_acolhimento: dadosAcolhimento,
         })
         .eq("id", casoExistente.id);
 
       setEnviando(false);
+      
       if (error) {
         alert("Erro ao atualizar acolhimento: " + error.message);
         return;
       }
-      navigate("/acompanhamento");
+      
+      // Feedback visual
+      setSalvoComSucesso(true);
+      setTimeout(() => setSalvoComSucesso(false), 3000);
       return;
     }
 
+    // MODO CRIAÇÃO: SALVA E REDIRECIONA
     const { data: solicitacaoExistente, error: erroBusca } = await supabase
       .from("triagens")
       .select("id, status")
@@ -711,15 +706,18 @@ ${detalhes || "Não informado"}
         duracao: urgencia,
         detalhes: resumoDoCaso,
         prioridade: prioridadeCalculada,
+        dados_acolhimento: dadosAcolhimento,
         status: "pendente",
       },
     ]);
 
     setEnviando(false);
+    
     if (error) {
       alert("Erro ao enviar solicitação: " + error.message);
       return;
     }
+    
     navigate("/acompanhamento");
   };
 
@@ -934,6 +932,7 @@ ${detalhes || "Não informado"}
                 type="button"
                 onClick={() => navigate("/acompanhamento")}
                 className="p-2 -ml-2 rounded-xl text-[#8FB5A4] hover:text-white hover:bg-[#0D1D18] transition-colors"
+                title="Voltar para acompanhamento sem salvar"
               >
                 <ArrowLeft size={20} />
               </button>
@@ -948,9 +947,37 @@ ${detalhes || "Não informado"}
               </div>
             </div>
           </div>
-          <div className="flex items-center gap-2 border border-[#1B3A30] bg-[#0D1D18] rounded-2xl px-4 py-2.5">
-            <User size={16} className="text-[#4ade80]" />
-            <p className="text-[#E8F5EE] text-sm font-bold">{cidadaoNome}</p>
+          
+          <div className="flex flex-wrap items-center gap-3">
+            {modoEdicao && (
+              <button
+                type="button"
+                onClick={lidarComEnvio}
+                disabled={enviando || !formularioValido}
+                className="flex items-center gap-2 border border-[#4ade80]/40 text-[#4ade80] bg-[#4ade80]/10 hover:bg-[#4ade80]/15 disabled:border-[#1B3A30] disabled:bg-[#07110E] disabled:text-[#6B8F7F] px-4 py-2.5 rounded-2xl text-sm font-black transition-all"
+              >
+                {enviando ? (
+                  <>
+                    <Loader2 size={16} className="animate-spin" />
+                    Salvando...
+                  </>
+                ) : salvoComSucesso ? (
+                  <>
+                    <Check size={16} />
+                    Salvo!
+                  </>
+                ) : (
+                  <>
+                    <CheckCircle size={16} />
+                    Salvar
+                  </>
+                )}
+              </button>
+            )}
+            <div className="flex items-center gap-2 border border-[#1B3A30] bg-[#0D1D18] rounded-2xl px-4 py-2.5">
+              <User size={16} className="text-[#4ade80]" />
+              <p className="text-[#E8F5EE] text-sm font-bold">{cidadaoNome}</p>
+            </div>
           </div>
         </div>
       </header>
@@ -979,7 +1006,7 @@ ${detalhes || "Não informado"}
                 </div>
                 <div className="w-full md:w-48">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-[#8FB5A4] text-xs font-bold">Campos Preenchidos</span>
+                    <span className="text-[#8FB5A4] text-xs font-bold">Campos essenciais</span>
                     <span className="text-[#4ade80] text-xs font-black">{calcularProgressoReal()}%</span>
                   </div>
                   <div className="h-2 bg-[#183429] rounded-full overflow-hidden">
@@ -993,6 +1020,7 @@ ${detalhes || "Não informado"}
               {renderEtapa()}
             </section>
 
+            {/* Navegação limpa do formulário (Voltar / Continuar) */}
             <div className="flex flex-col sm:flex-row gap-3 mt-6">
               <button
                 type="button"
@@ -1022,7 +1050,12 @@ ${detalhes || "Não informado"}
                   {enviando ? (
                     <>
                       <Loader2 size={16} className="animate-spin" />
-                      Enviando
+                      {modoEdicao ? "Salvando..." : "Enviando..."}
+                    </>
+                  ) : salvoComSucesso ? (
+                    <>
+                      <Check size={16} />
+                      Salvo com sucesso!
                     </>
                   ) : (
                     <>

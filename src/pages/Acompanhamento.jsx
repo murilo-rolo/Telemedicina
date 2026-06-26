@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../supabaseClient'
+import { normalizarAcolhimento } from '../utils/acolhimento'
 import {
   User,
   Phone,
@@ -367,7 +368,7 @@ export default function Acompanhamento() {
     )
   }
 
-  const dadosAcolhimento = obterDadosAcolhimento(caso?.detalhes || '', caso?.sintomas)
+  const dadosAcolhimento = normalizarAcolhimento(caso)
   const statusAtual = obterStatusConfig(caso?.status)
   const IconeStatus = statusAtual.Icone
   const casoConcluido = caso?.status === 'concluido'

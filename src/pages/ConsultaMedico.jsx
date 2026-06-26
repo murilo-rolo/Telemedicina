@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { supabase } from '../supabaseClient'
+import { normalizarAcolhimento } from '../utils/acolhimento'
 import {
   User,
   Phone,
@@ -332,7 +333,7 @@ export default function ConsultaMedico() {
     )
   }
 
-  const dadosAcolhimento = obterDadosAcolhimento(caso?.detalhes || '', caso?.sintomas)
+  const dadosAcolhimento = normalizarAcolhimento(caso)
   const casoConcluido = caso?.status === 'concluido'
   const urgenciaTecnica = dadosAcolhimento.urgencia || caso?.duracao
   const pontuacaoRisco = dadosAcolhimento.pontuacao || 'Não informado'
