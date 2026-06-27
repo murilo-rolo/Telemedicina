@@ -2,13 +2,20 @@ import { useEffect, useRef, useState } from 'react'
 import { supabase } from '../supabaseClient'
 import { Send, MessageSquare, Loader2 } from 'lucide-react'
 
-export default function MensagensCaso({ casoId, remetenteTipo, remetenteNome }) {
+export default function MensagensCaso({ casoId, remetenteTipo, remetenteNome, modo }) {
   const [mensagens, setMensagens] = useState([])
   const [texto, setTexto] = useState('')
   const [carregando, setCarregando] = useState(true)
   const [enviando, setEnviando] = useState(false)
 
   const fimDaListaRef = useRef(null)
+
+  const remetenteTipoFinal =
+    remetenteTipo || (modo === 'assistente' ? 'assistente' : 'cidadao')
+
+  const remetenteNomeFinal =
+    remetenteNome ||
+    (remetenteTipoFinal === 'assistente' ? 'Assistente Social' : 'Cidadão')
 
   useEffect(() => {
     if (!casoId || casoId === 'demo') {
@@ -103,8 +110,8 @@ export default function MensagensCaso({ casoId, remetenteTipo, remetenteNome }) 
         {
           caso_id: casoId,
           remetente_id: user.id,
-          remetente_nome: remetenteNome || 'Usuário',
-          remetente_tipo: remetenteTipo,
+          remetente_nome: remetenteNomeFinal,
+          remetente_tipo: remetenteTipoFinal,
           texto: textoLimpo,
         }
       ])
@@ -176,7 +183,7 @@ export default function MensagensCaso({ casoId, remetenteTipo, remetenteNome }) 
         )}
 
         {!carregando && mensagens.map((mensagem) => {
-          const minhaMensagem = mensagem.remetente_tipo === remetenteTipo
+          const minhaMensagem = mensagem.remetente_tipo === remetenteTipoFinal
 
           return (
             <div

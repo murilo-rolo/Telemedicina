@@ -250,7 +250,8 @@ export default function TeleconferenciaAssistente() {
         conteudo: (
           <MensagensCaso
             casoId={caso?.id}
-            modo="assistente"
+  remetenteTipo="assistente"
+  remetenteNome="Assistente Social"
           />
         ),
       },
