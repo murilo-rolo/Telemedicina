@@ -2,6 +2,10 @@ import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { supabase } from '../supabaseClient'
 import VideoCall from '../components/VideoCall'
+import { obterSalaDaily } from '../utils/daily'
+import MensagensCaso from '../components/MensagensCaso'
+import PlanoAcaoCaso from '../components/PlanoAcaoCaso'
+import DocumentosCaso from '../components/DocumentosCaso'
 import {
   ChevronLeft,
   Video,
@@ -16,6 +20,7 @@ import {
   MessageSquare,
   Briefcase,
   Lock,
+  X,
 } from 'lucide-react'
 
 export default function TeleconferenciaAssistente() {
@@ -28,8 +33,8 @@ export default function TeleconferenciaAssistente() {
   const [carregando, setCarregando] = useState(true)
   const [salvando, setSalvando] = useState(false)
   const [videoAtivo, setVideoAtivo] = useState(false)
-
-  const URL_SALA = 'https://telesaude.daily.co/Sala-atendimento'
+  const [salaUrl, setSalaUrl] = useState('')
+  const [painelAtivo, setPainelAtivo] = useState(null)
 
   useEffect(() => {
     const buscarCaso = async () => {
@@ -59,8 +64,24 @@ export default function TeleconferenciaAssistente() {
       }
 
       sessionStorage.setItem('elosocial_caso_atual', data.id)
+      
       setCaso(data)
-      setVideoAtivo(data.status === 'em_atendimento')
+
+      if (data.status === 'em_atendimento') {
+        try {
+          const sala = data.daily_room_url
+            ? { url: data.daily_room_url }
+            : await obterSalaDaily(data.id)
+
+          setSalaUrl(sala.url)
+          setVideoAtivo(true)
+        } catch (error) {
+          alert('Erro ao carregar sala Daily: ' + error.message)
+        }
+      } else {
+        setVideoAtivo(false)
+      }
+
       setCarregando(false)
     }
 
@@ -94,27 +115,37 @@ export default function TeleconferenciaAssistente() {
 
     setSalvando(true)
 
-    const { error } = await supabase
-      .from('triagens')
-      .update({
+    try {
+      const sala = caso.daily_room_url
+        ? { url: caso.daily_room_url }
+        : await obterSalaDaily(idTriagem)
+
+      const { error } = await supabase
+        .from('triagens')
+        .update({
+          status: 'em_atendimento',
+          aguardando_video: false,
+        })
+        .eq('id', idTriagem)
+
+      if (error) {
+        alert('Erro ao iniciar chamada: ' + error.message)
+        return
+      }
+
+      atualizarCasoLocal({
         status: 'em_atendimento',
         aguardando_video: false,
+        daily_room_url: sala.url,
       })
-      .eq('id', idTriagem)
 
-    setSalvando(false)
-
-    if (error) {
-      alert('Erro ao iniciar chamada: ' + error.message)
-      return
+      setSalaUrl(sala.url)
+      setVideoAtivo(true)
+    } catch (error) {
+      alert('Erro ao preparar sala Daily: ' + error.message)
+    } finally {
+      setSalvando(false)
     }
-
-    atualizarCasoLocal({
-      status: 'em_atendimento',
-      aguardando_video: false,
-    })
-
-    setVideoAtivo(true)
   }
 
   const finalizarChamada = async () => {
@@ -153,23 +184,9 @@ export default function TeleconferenciaAssistente() {
     })
   }
 
-  const abrirMensagens = () => {
-    navigate('/mensagens-assistente', {
-      state: { idTriagem },
-    })
-  }
-
-  const abrirPlanoAcao = () => {
-    navigate('/plano-acao-assistente', {
-      state: { idTriagem },
-    })
-  }
-
-  const abrirCofreDigital = () => {
-    navigate('/cofre-digital-assistente', {
-      state: { idTriagem },
-    })
-  }
+  const abrirMensagens = () => setPainelAtivo('mensagens')
+  const abrirPlanoAcao = () => setPainelAtivo('plano')
+  const abrirCofreDigital = () => setPainelAtivo('cofre')
 
   const obterStatusConfig = (status) => {
     const config = {
@@ -222,6 +239,80 @@ export default function TeleconferenciaAssistente() {
       </p>
     </button>
   )
+
+  const renderPainelAtivo = () => {
+    if (!painelAtivo) return null
+  
+    const config = {
+      mensagens: {
+        titulo: 'Mensagens',
+        Icone: MessageSquare,
+        conteudo: (
+          <MensagensCaso
+            casoId={caso?.id}
+            modo="assistente"
+          />
+        ),
+      },
+      plano: {
+        titulo: 'Plano de ação',
+        Icone: Briefcase,
+        conteudo: (
+          <PlanoAcaoCaso
+            casoId={caso?.id}
+            modo="assistente"
+          />
+        ),
+      },
+      cofre: {
+        titulo: 'Cofre digital',
+        Icone: Lock,
+        conteudo: (
+          <DocumentosCaso
+            casoId={caso?.id}
+            modo="assistente"
+          />
+        ),
+      },
+    }
+  
+    const painel = config[painelAtivo]
+    const Icone = painel.Icone
+  
+    return (
+      <section className="bg-[#11211C] border border-[#1A332A] rounded-3xl p-5 md:p-6">
+        <div className="flex items-center justify-between gap-4 mb-5">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-[#1A332A] text-[#4ade80] flex items-center justify-center">
+              <Icone size={18} />
+            </div>
+  
+            <div>
+              <p className="text-[#4ade80] text-[10px] uppercase tracking-widest font-bold">
+                Durante a chamada
+              </p>
+              <h2 className="text-white text-lg font-bold">
+                {painel.titulo}
+              </h2>
+            </div>
+          </div>
+  
+          <button
+            type="button"
+            onClick={() => setPainelAtivo(null)}
+            className="p-2 rounded-xl text-[#7A9C8D] hover:text-white hover:bg-[#0B1511] transition-colors"
+            title="Fechar painel"
+          >
+            <X size={18} />
+          </button>
+        </div>
+  
+        <div className="bg-[#0B1511] border border-[#1A332A] rounded-2xl p-4">
+          {painel.conteudo}
+        </div>
+      </section>
+    )
+  }
 
   if (carregando) {
     return (
@@ -278,7 +369,15 @@ export default function TeleconferenciaAssistente() {
           <section className="bg-[#11211C] border border-[#1A332A] rounded-3xl p-4 md:p-5">
             {videoAtivo ? (
               <div className="h-[620px] bg-[#050A08] border border-[#1A332A] rounded-2xl overflow-hidden ring-4 ring-[#4ade80]/10">
-                <VideoCall url={URL_SALA} userName="Assistente Social" />
+                {salaUrl ? (
+                  <VideoCall url={salaUrl} userName="Assistente Social" />
+                ) : (
+                  <div className="h-full flex items-center justify-center">
+                    <p className="text-[#7A9C8D] text-sm">
+                      Preparando sala de vídeo...
+                    </p>
+                  </div>
+                )}
               </div>
             ) : (
               <div className="h-[620px] border border-dashed border-[#24473B] bg-[#0B1511] rounded-2xl flex flex-col items-center justify-center text-center p-8">
@@ -305,6 +404,8 @@ export default function TeleconferenciaAssistente() {
               </div>
             )}
           </section>
+
+          {renderPainelAtivo()}
         </div>
 
         <div className="lg:col-span-4 space-y-6">

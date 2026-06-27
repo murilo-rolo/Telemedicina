@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../supabaseClient'
 import VideoCall from '../components/VideoCall'
+import { obterSalaDaily } from '../utils/daily'
 
 export default function Consulta() {
   const navigate = useNavigate()
@@ -9,11 +10,10 @@ export default function Consulta() {
   const [chamadaAtiva, setChamadaAtiva] = useState(false)
   const [nomeUsuario, setNomeUsuario] = useState('')
   const [carregando, setCarregando] = useState(true)
+  const [salaUrl, setSalaUrl] = useState('')
 
   const casoIdRef = useRef(null)
   const statusRef = useRef(null)
-
-  const URL_SALA = 'https://telesaude.daily.co/Sala-atendimento'
 
   useEffect(() => {
     let canal
@@ -45,7 +45,7 @@ export default function Consulta() {
 
       const { data: solicitacaoAtual, error: erroSolicitacao } = await supabase
         .from('triagens')
-        .select('id, status')
+        .select('id, status, daily_room_url')
         .eq('user_id', user.id)
         .in('status', ['pendente', 'em_atendimento', 'em_acompanhamento', 'concluido'])
         .order('created_at', { ascending: false })
@@ -77,8 +77,13 @@ export default function Consulta() {
           .update({ aguardando_video: false })
           .eq('id', solicitacaoAtual.id)
 
+        const sala = solicitacaoAtual.daily_room_url
+          ? { url: solicitacaoAtual.daily_room_url }
+          : await obterSalaDaily(solicitacaoAtual.id)
+
         if (!componenteAtivo) return
 
+        setSalaUrl(sala.url)
         setChamadaAtiva(true)
       } else {
         await supabase
@@ -97,13 +102,18 @@ export default function Consulta() {
             table: 'triagens',
             filter: `user_id=eq.${user.id}`,
           },
-          (payload) => {
+          async (payload) => {
             const statusAnterior = statusRef.current
             const novoStatus = payload.new.status
 
             statusRef.current = novoStatus
 
             if (novoStatus === 'em_atendimento') {
+              const sala = payload.new.daily_room_url
+                ? { url: payload.new.daily_room_url }
+                : await obterSalaDaily(payload.new.id)
+
+              setSalaUrl(sala.url)
               setChamadaAtiva(true)
               setCarregando(false)
               return
@@ -214,7 +224,7 @@ export default function Consulta() {
           </div>
 
           <div className="flex-1 w-full h-full relative">
-            <VideoCall url={URL_SALA} userName={nomeUsuario || 'Cidadão'} />
+            <VideoCall url={salaUrl} userName={nomeUsuario || 'Cidadão'} />
           </div>
 
           <button
