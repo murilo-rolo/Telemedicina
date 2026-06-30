@@ -312,7 +312,7 @@ export default function ConsultaMedico() {
       </div>
 
       <div className="flex-1">
-        <p className="text-sm font-semibold text-white">{titulo}</p>
+        <p className="text-sm font-semibold text-text-primary">{titulo}</p>
         <p className="text-[10px] text-text-secondary mt-0.5">{subtitulo}</p>
       </div>
 
@@ -345,7 +345,7 @@ export default function ConsultaMedico() {
           <div className="flex items-center gap-4">
             <button
               onClick={() => navigate('/dashboard-medico')}
-              className="p-2 -ml-2 rounded-xl text-text-secondary hover:text-white hover:bg-bg-surface transition-colors"
+              className="p-2 -ml-2 rounded-xl text-text-secondary hover:text-text-primary hover:bg-bg-surface transition-colors"
             >
               <ChevronLeft size={20} />
             </button>
@@ -355,7 +355,7 @@ export default function ConsultaMedico() {
                 Plataforma EloSocial
               </p>
 
-              <h1 className="text-xl font-bold tracking-tight text-white">
+              <h1 className="text-xl font-bold tracking-tight text-text-primary">
                 Prontuário Social
               </h1>
             </div>
@@ -364,7 +364,7 @@ export default function ConsultaMedico() {
           <div className="flex flex-wrap gap-3">
             <button
               onClick={sair}
-              className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold border border-border text-text-secondary bg-bg-surface hover:text-white hover:border-border-hover transition-all"
+              className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold border border-border text-text-secondary bg-bg-surface hover:text-text-primary hover:border-border-hover transition-all"
             >
               <LogOut size={16} />
               Sair
@@ -387,7 +387,7 @@ export default function ConsultaMedico() {
           <section className="bg-bg-surface border border-border rounded-3xl p-6 md:p-8">
             <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-8">
               <div>
-                <h2 className="text-3xl font-bold text-white tracking-tight mb-3">
+                <h2 className="text-3xl font-bold text-text-primary tracking-tight mb-3">
                   {caso?.paciente_nome || 'Cidadão não identificado'}
                 </h2>
 

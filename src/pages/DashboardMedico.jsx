@@ -138,7 +138,7 @@ export default function DashboardMedico() {
             {titulo}
           </span>
         </div>
-        <span className="text-3xl font-bold text-white tracking-tight">{valor}</span>
+        <span className="text-3xl font-bold text-text-primary tracking-tight">{valor}</span>
       </button>
     )
   }
@@ -157,7 +157,7 @@ export default function DashboardMedico() {
               <p className="text-accent text-[10px] uppercase tracking-widest font-bold mb-0.5">
                 Plataforma EloSocial
               </p>
-              <h1 className="text-xl font-bold tracking-tight text-white">
+              <h1 className="text-xl font-bold tracking-tight text-text-primary">
                 Fila de Atendimento
               </h1>
             </div>
@@ -166,7 +166,7 @@ export default function DashboardMedico() {
           <button
             onClick={buscarCasos}
             disabled={carregando}
-            className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold border border-border bg-bg-surface text-text-secondary hover:text-white hover:border-accent/50 hover:bg-bg-surface-hover transition-all disabled:opacity-50"
+            className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold border border-border bg-bg-surface text-text-secondary hover:text-text-primary hover:border-accent/50 hover:bg-bg-surface-hover transition-all disabled:opacity-50"
           >
             <RefreshCw size={16} className={carregando ? "animate-spin text-accent" : ""} />
             {carregando ? 'Sincronizando...' : 'Atualizar Dados'}

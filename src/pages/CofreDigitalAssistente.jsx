@@ -68,7 +68,7 @@ export default function CofreDigitalAssistente() {
           <div className="flex items-center gap-4">
             <button
               onClick={() => navigate('/consulta-medica', { state: { idTriagem: caso?.id } })}
-              className="p-2 -ml-2 rounded-xl text-text-secondary hover:text-white hover:bg-bg-surface transition-colors"
+              className="p-2 -ml-2 rounded-xl text-text-secondary hover:text-text-primary hover:bg-bg-surface transition-colors"
               title="Voltar ao caso"
             >
               <ChevronLeft size={20} />
@@ -78,7 +78,7 @@ export default function CofreDigitalAssistente() {
                 <Lock size={12} />
                 Cofre Digital
               </p>
-              <h1 className="text-xl font-bold tracking-tight text-white">
+              <h1 className="text-xl font-bold tracking-tight text-text-primary">
                 {caso?.paciente_nome || 'Cidadão não identificado'}
               </h1>
             </div>

@@ -288,7 +288,7 @@ export default function Acompanhamento() {
       </div>
 
       <div className="flex-1">
-        <p className="text-sm font-semibold text-white">{titulo}</p>
+        <p className="text-sm font-semibold text-text-primary">{titulo}</p>
         <p className="text-[10px] text-text-secondary mt-0.5">{subtitulo}</p>
       </div>
 
@@ -317,7 +317,7 @@ export default function Acompanhamento() {
             <AlertTriangle size={20} className="text-red-400" />
           </div>
 
-          <h1 className="text-white text-xl font-bold mb-3">
+          <h1 className="text-text-primary text-xl font-bold mb-3">
             Não foi possível carregar
           </h1>
 
@@ -349,7 +349,7 @@ export default function Acompanhamento() {
             Plataforma EloSocial
           </p>
 
-          <h1 className="text-white text-xl font-bold mb-3">
+          <h1 className="text-text-primary text-xl font-bold mb-3">
             Nenhum acompanhamento encontrado
           </h1>
 
@@ -381,14 +381,14 @@ export default function Acompanhamento() {
             <p className="text-accent text-[10px] uppercase tracking-widest font-bold mb-0.5">
               Plataforma EloSocial
             </p>
-            <h1 className="text-xl font-bold tracking-tight text-white">
+            <h1 className="text-xl font-bold tracking-tight text-text-primary">
               Meu Acompanhamento
             </h1>
           </div>
 
           <button
             onClick={sair}
-            className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold border border-border text-text-secondary bg-bg-surface hover:text-white hover:border-border-hover transition-all"
+            className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold border border-border text-text-secondary bg-bg-surface hover:text-text-primary hover:border-border-hover transition-all"
           >
             <LogOut size={16} />
             Sair
@@ -405,7 +405,7 @@ export default function Acompanhamento() {
                   Olá, {nomeUsuario || 'cidadão'}.
                 </p>
 
-                <h2 className="text-3xl font-bold text-white tracking-tight mb-3">
+                <h2 className="text-3xl font-bold text-text-primary tracking-tight mb-3">
                   Seu caso social
                 </h2>
 
@@ -441,7 +441,7 @@ export default function Acompanhamento() {
                 </div>
 
                 <div>
-                  <p className="text-white text-sm font-semibold mb-1">
+                  <p className="text-text-primary text-sm font-semibold mb-1">
                     {statusAtual.texto}
                   </p>
                   <p className="text-text-secondary text-sm leading-relaxed">

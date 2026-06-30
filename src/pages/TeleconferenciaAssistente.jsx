@@ -234,7 +234,7 @@ export default function TeleconferenciaAssistente() {
         <Icone size={18} />
       </div>
 
-      <p className="text-sm font-semibold text-white">
+      <p className="text-sm font-semibold text-text-primary">
         {titulo}
       </p>
     </button>
@@ -292,7 +292,7 @@ export default function TeleconferenciaAssistente() {
               <p className="text-accent text-[10px] uppercase tracking-widest font-bold">
                 Durante a chamada
               </p>
-              <h2 className="text-white text-lg font-bold">
+              <h2 className="text-text-primary text-lg font-bold">
                 {painel.titulo}
               </h2>
             </div>
@@ -301,7 +301,7 @@ export default function TeleconferenciaAssistente() {
           <button
             type="button"
             onClick={() => setPainelAtivo(null)}
-            className="p-2 rounded-xl text-text-secondary hover:text-white hover:bg-bg-base transition-colors"
+            className="p-2 rounded-xl text-text-secondary hover:text-text-primary hover:bg-bg-base transition-colors"
             title="Fechar painel"
           >
             <X size={18} />
@@ -339,7 +339,7 @@ export default function TeleconferenciaAssistente() {
           <div className="flex items-center gap-4">
             <button
               onClick={voltarAoCaso}
-              className="p-2 -ml-2 rounded-xl text-text-secondary hover:text-white hover:bg-bg-surface transition-colors"
+              className="p-2 -ml-2 rounded-xl text-text-secondary hover:text-text-primary hover:bg-bg-surface transition-colors"
             >
               <ChevronLeft size={20} />
             </button>
@@ -349,7 +349,7 @@ export default function TeleconferenciaAssistente() {
                 Plataforma EloSocial
               </p>
 
-              <h1 className="text-xl font-bold tracking-tight text-white">
+              <h1 className="text-xl font-bold tracking-tight text-text-primary">
                 Teleconferência
               </h1>
             </div>
@@ -357,7 +357,7 @@ export default function TeleconferenciaAssistente() {
 
           <button
             onClick={sair}
-            className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold border border-border text-text-secondary bg-bg-surface hover:text-white hover:border-border-hover transition-all"
+            className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold border border-border text-text-secondary bg-bg-surface hover:text-text-primary hover:border-border-hover transition-all"
           >
             <LogOut size={16} />
             Sair
@@ -386,7 +386,7 @@ export default function TeleconferenciaAssistente() {
                   <Video size={28} />
                 </div>
 
-                <h2 className="text-white text-2xl font-bold mb-2">
+                <h2 className="text-text-primary text-2xl font-bold mb-2">
                   Sala não iniciada
                 </h2>
 
@@ -418,7 +418,7 @@ export default function TeleconferenciaAssistente() {
               </h3>
             </div>
 
-            <h2 className="text-2xl font-bold text-white tracking-tight mb-4">
+            <h2 className="text-2xl font-bold text-text-primary tracking-tight mb-4">
               {caso?.paciente_nome || 'Cidadão não identificado'}
             </h2>
 
@@ -478,7 +478,7 @@ export default function TeleconferenciaAssistente() {
 
               <button
                 onClick={voltarAoCaso}
-                className="w-full flex items-center justify-center gap-2 border border-border text-text-secondary bg-bg-base hover:text-white hover:border-border-hover px-6 py-3 rounded-xl text-sm font-semibold transition-all"
+                className="w-full flex items-center justify-center gap-2 border border-border text-text-secondary bg-bg-base hover:text-text-primary hover:border-border-hover px-6 py-3 rounded-xl text-sm font-semibold transition-all"
               >
                 <ChevronLeft size={16} />
                 Voltar ao prontuário

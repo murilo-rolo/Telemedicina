@@ -313,7 +313,7 @@ export default function PlanoAcaoCaso({ casoId, modo }) {
                     className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
                       item.status === 'pendente' 
                         ? 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/20 pointer-events-none' 
-                        : 'text-text-secondary hover:bg-bg-surface hover:text-white border border-transparent'
+                        : 'text-text-secondary hover:bg-bg-surface hover:text-text-primary border border-transparent'
                     }`}
                   >
                     <Clock size={14} /> Pendente
@@ -324,7 +324,7 @@ export default function PlanoAcaoCaso({ casoId, modo }) {
                     className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
                       item.status === 'em_andamento' 
                         ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20 pointer-events-none' 
-                        : 'text-text-secondary hover:bg-bg-surface hover:text-white border border-transparent'
+                        : 'text-text-secondary hover:bg-bg-surface hover:text-text-primary border border-transparent'
                     }`}
                   >
                     <PlayCircle size={14} /> Em Andamento
@@ -335,7 +335,7 @@ export default function PlanoAcaoCaso({ casoId, modo }) {
                     className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
                       item.status === 'concluido' 
                         ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 pointer-events-none' 
-                        : 'text-text-secondary hover:bg-bg-surface hover:text-white border border-transparent'
+                        : 'text-text-secondary hover:bg-bg-surface hover:text-text-primary border border-transparent'
                     }`}
                   >
                     <CheckCircle size={14} /> Concluído

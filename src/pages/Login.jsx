@@ -65,7 +65,7 @@ export default function Login() {
           <div className="inline-flex items-center justify-center w-24 h-24 rounded-[2rem] bg-bg-surface border border-border shadow-2xl mb-8 group">
             <HeartHandshake className="w-12 h-12 text-accent group-hover:scale-110 transition-transform duration-500" strokeWidth={1.5} />
           </div>
-          <h1 className="text-4xl xl:text-5xl font-bold text-white tracking-tight mb-6">
+          <h1 className="text-4xl xl:text-5xl font-bold text-text-primary tracking-tight mb-6">
             Plataforma EloSocial
           </h1>
           <p className="text-text-secondary text-lg xl:text-xl max-w-md mx-auto leading-relaxed font-medium">
@@ -88,11 +88,11 @@ export default function Login() {
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-bg-surface border border-border shadow-lg mb-4">
               <HeartHandshake className="w-8 h-8 text-accent" strokeWidth={1.5} />
             </div>
-            <h1 className="text-2xl font-bold text-white tracking-tight">EloSocial</h1>
+            <h1 className="text-2xl font-bold text-text-primary tracking-tight">EloSocial</h1>
           </div>
 
           <div className="mb-10">
-            <h2 className="text-3xl sm:text-4xl font-bold text-white tracking-tight mb-3">
+            <h2 className="text-3xl sm:text-4xl font-bold text-text-primary tracking-tight mb-3">
               Bem-vindo(a)
             </h2>
             <p className="text-text-secondary text-base">

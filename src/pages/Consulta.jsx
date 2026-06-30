@@ -229,7 +229,7 @@ export default function Consulta() {
 
           <button
             onClick={voltarParaAcompanhamento}
-            className="mt-6 text-citz-text-secondary hover:text-white underline text-sm"
+            className="mt-6 text-citz-text-secondary hover:text-text-primary underline text-sm"
           >
             Voltar para Meu Acompanhamento
           </button>

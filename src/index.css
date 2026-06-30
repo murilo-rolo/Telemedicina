@@ -39,9 +39,16 @@
 
 .light {
   --bg-base: #FFFFFF;
+  --bg-surface: #EAF0EC;
+  --bg-surface-hover: #DCE5DE;
+  --bg-elevated: #F0F4F0;
   --bg-input: #FFFFFF;
+  --bg-progress: #D4EDDA;
+  --bg-video: #F0F4F0;
+  --bg-icon: #DCE5DE;
   --citz-bg-base: #FFFFFF;
   --citz-bg-surface: #F5F5F5;
+  --citz-bg-hover: #DCE5DE;
   --text-primary: #111111;
   --text-secondary: #444444;
   --citz-text-primary: #111111;

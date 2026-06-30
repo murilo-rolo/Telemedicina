@@ -175,7 +175,7 @@ function CartaoOpcao({ titulo, Icone, selecionado, onClick }) {
         </div>
       </div>
 
-      <p className="relative text-white text-sm font-black leading-tight">
+      <p className="relative text-text-primary text-sm font-black leading-tight">
         {titulo}
       </p>
     </button>
@@ -189,7 +189,7 @@ function BotaoSelecao({ children, selecionado, onClick }) {
       onClick={onClick}
        className={`rounded-2xl border px-4 py-3.5 text-left transition-all duration-200 ${
          selecionado
-           ? "border-accent/70 bg-accent/12 text-white"
+           ? "border-accent/70 bg-accent/12 text-text-primary"
            : "border-border-muted bg-bg-input text-text-body hover:border-border-accent hover:bg-bg-elevated"
        }`}
      >
@@ -236,7 +236,7 @@ function PainelLateral({
               <p className="text-accent text-[10px] uppercase tracking-[0.2em] font-black">
                 EloSocial
               </p>
-              <p className="text-white text-sm font-bold">Acolhimento guiado</p>
+              <p className="text-text-primary text-sm font-bold">Acolhimento guiado</p>
             </div>
           </div>
 
@@ -246,7 +246,7 @@ function PainelLateral({
                 <p className="text-text-label text-[10px] uppercase tracking-[0.18em] font-bold mb-1">
                   Progresso
                 </p>
-                <p className="text-white text-3xl font-black">{progressoReal}%</p>
+                <p className="text-text-primary text-3xl font-black">{progressoReal}%</p>
               </div>
 
               <div className="w-14 h-14 rounded-2xl bg-bg-input border border-border-muted flex items-center justify-center">
@@ -293,7 +293,7 @@ function PainelLateral({
                   </div>
 
                   <div>
-                    <p className="text-white text-sm font-bold">
+                    <p className="text-text-primary text-sm font-bold">
                       {etapa.titulo}
                     </p>
                     <p className="text-text-label text-[11px]">
@@ -317,19 +317,19 @@ function PainelLateral({
             <div className="space-y-4">
               <div>
                 <p className="text-text-label text-[11px] mb-1">Cidadão</p>
-                <p className="text-white text-sm font-bold">{cidadaoNome}</p>
+                <p className="text-text-primary text-sm font-bold">{cidadaoNome}</p>
               </div>
 
               <div>
                 <p className="text-text-label text-[11px] mb-1">Motivo</p>
-                <p className="text-white text-sm font-bold">
+                <p className="text-text-primary text-sm font-bold">
                   {demandaFinal || "Não informado"}
                 </p>
               </div>
 
               <div>
                 <p className="text-text-label text-[11px] mb-1">Urgência</p>
-                <p className="text-white text-sm font-bold">
+                <p className="text-text-primary text-sm font-bold">
                   {urgencia === "alta" && "Atenção imediata"}
                   {urgencia === "media" && "Retorno breve"}
                   {urgencia === "baixa" && "Pode aguardar"}
@@ -338,7 +338,7 @@ function PainelLateral({
 
               <div>
                 <p className="text-text-label text-[11px] mb-1">Situações</p>
-                <p className="text-white text-sm font-bold">{situacoesCount}</p>
+                <p className="text-text-primary text-sm font-bold">{situacoesCount}</p>
               </div>
             </div>
           </div>
@@ -817,7 +817,7 @@ export default function Triagem() {
                   onClick={() => setUrgencia(valor)}
                   className={`rounded-2xl border p-4 text-center text-sm font-black transition-all ${
                     urgencia === valor
-                      ? "border-accent/70 bg-accent/12 text-white"
+                      ? "border-accent/70 bg-accent/12 text-text-primary"
                       : "border-border-muted bg-bg-input text-text-label hover:border-border-accent"
                   }`}
                 >
@@ -859,19 +859,19 @@ export default function Triagem() {
           <div className="grid sm:grid-cols-2 gap-4 text-sm">
             <div>
               <p className="text-text-label text-xs mb-1">Motivo</p>
-              <p className="text-white font-bold">{obterDemandaFinal() || "Não informado"}</p>
+              <p className="text-text-primary font-bold">{obterDemandaFinal() || "Não informado"}</p>
             </div>
             <div>
               <p className="text-text-label text-xs mb-1">Contato</p>
-              <p className="text-white font-bold">{telefone || "Não informado"}</p>
+              <p className="text-text-primary font-bold">{telefone || "Não informado"}</p>
             </div>
             <div>
               <p className="text-text-label text-xs mb-1">Localidade</p>
-              <p className="text-white font-bold">{bairroLocalidade || "Não informado"}</p>
+              <p className="text-text-primary font-bold">{bairroLocalidade || "Não informado"}</p>
             </div>
             <div>
               <p className="text-text-label text-xs mb-1">Situações</p>
-              <p className="text-white font-bold">{obterSituacoesFinais().length}</p>
+              <p className="text-text-primary font-bold">{obterSituacoesFinais().length}</p>
             </div>
           </div>
         </div>
@@ -898,7 +898,7 @@ export default function Triagem() {
             <CheckCircle size={24} />
           </div>
           <p className="text-accent text-[10px] uppercase tracking-[0.2em] font-black mb-2">Plataforma EloSocial</p>
-          <h1 className="text-white text-2xl font-black mb-3">Acompanhamento ativo</h1>
+          <h1 className="text-text-primary text-2xl font-black mb-3">Acompanhamento ativo</h1>
           <p className="text-text-label text-sm leading-relaxed mb-7">Você já possui um caso social em andamento.</p>
           <button
             type="button"
@@ -931,7 +931,7 @@ export default function Triagem() {
               <button
                 type="button"
                 onClick={() => navigate("/acompanhamento")}
-                className="p-2 -ml-2 rounded-xl text-text-label hover:text-white hover:bg-bg-elevated transition-colors"
+                className="p-2 -ml-2 rounded-xl text-text-label hover:text-text-primary hover:bg-bg-elevated transition-colors"
                 title="Voltar para acompanhamento sem salvar"
               >
                 <ArrowLeft size={20} />
@@ -943,7 +943,7 @@ export default function Triagem() {
               </div>
               <div>
                 <p className="text-accent text-[10px] uppercase tracking-[0.22em] font-black mb-0.5">Plataforma EloSocial</p>
-                <h1 className="text-xl font-black tracking-tight text-white">{modoEdicao ? "Editar acolhimento" : "Acolhimento social"}</h1>
+                <h1 className="text-xl font-black tracking-tight text-text-primary">{modoEdicao ? "Editar acolhimento" : "Acolhimento social"}</h1>
               </div>
             </div>
           </div>
@@ -999,7 +999,7 @@ export default function Triagem() {
                     </div>
                     <div>
                       <p className="text-accent text-[10px] uppercase tracking-[0.22em] font-black mb-1">Etapa {etapaAtual + 1} de {ETAPAS.length}</p>
-                      <h2 className="text-white text-3xl md:text-4xl font-black tracking-tight">{etapa.titulo}</h2>
+                      <h2 className="text-text-primary text-3xl md:text-4xl font-black tracking-tight">{etapa.titulo}</h2>
                     </div>
                   </div>
                   <p className="text-text-body text-sm md:text-base leading-relaxed max-w-2xl">{etapa.subtitulo}</p>
@@ -1026,7 +1026,7 @@ export default function Triagem() {
                 type="button"
                 onClick={voltar}
                 disabled={etapaAtual === 0}
-                className="sm:w-40 flex items-center justify-center gap-2 border border-border-muted text-text-label bg-bg-input hover:text-white hover:border-border-accent disabled:opacity-40 py-3.5 rounded-2xl text-sm font-bold transition-all"
+                className="sm:w-40 flex items-center justify-center gap-2 border border-border-muted text-text-label bg-bg-input hover:text-text-primary hover:border-border-accent disabled:opacity-40 py-3.5 rounded-2xl text-sm font-bold transition-all"
               >
                 <ChevronLeft size={16} />
                 Voltar
