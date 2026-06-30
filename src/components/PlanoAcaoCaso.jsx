@@ -178,40 +178,40 @@ export default function PlanoAcaoCaso({ casoId, modo }) {
     <div className="space-y-8 h-full flex flex-col">
       
       {podeCriar && (
-        <form onSubmit={criarItem} className="bg-[#0B1511] border border-[#1A332A] rounded-2xl p-5 md:p-6 shadow-sm shrink-0">
+        <form onSubmit={criarItem} className="bg-bg-base border border-border rounded-2xl p-5 md:p-6 shadow-sm shrink-0">
           <div className="space-y-4">
             <div>
-              <label className="block text-[#7A9C8D] text-xs font-semibold uppercase tracking-wider mb-2">
+              <label className="block text-text-secondary text-xs font-semibold uppercase tracking-wider mb-2">
                 Título
               </label>
               <input
                 value={titulo}
                 onChange={(e) => setTitulo(e.target.value)}
-                className="w-full bg-[#11211C] border border-[#1A332A] rounded-xl px-4 py-3 text-sm text-[#E2E8F0] outline-none focus:border-[#4ade80]/50 focus:ring-1 focus:ring-[#4ade80]/50 transition-all"
+                className="w-full bg-bg-surface border border-border rounded-xl px-4 py-3 text-sm text-text-primary outline-none focus:border-accent/50 focus:ring-1 focus:ring-accent/50 transition-all"
               />
             </div>
 
             <div>
-              <label className="block text-[#7A9C8D] text-xs font-semibold uppercase tracking-wider mb-2">
+              <label className="block text-text-secondary text-xs font-semibold uppercase tracking-wider mb-2">
                 Descrição
               </label>
               <textarea
                 value={descricao}
                 onChange={(e) => setDescricao(e.target.value)}
                 rows="2"
-                className="w-full bg-[#11211C] border border-[#1A332A] rounded-xl px-4 py-3 text-sm text-[#E2E8F0] outline-none focus:border-[#4ade80]/50 focus:ring-1 focus:ring-[#4ade80]/50 resize-none transition-all"
+                className="w-full bg-bg-surface border border-border rounded-xl px-4 py-3 text-sm text-text-primary outline-none focus:border-accent/50 focus:ring-1 focus:ring-accent/50 resize-none transition-all"
               ></textarea>
             </div>
 
             <div className="grid md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-[#7A9C8D] text-xs font-semibold uppercase tracking-wider mb-2">
+                <label className="block text-text-secondary text-xs font-semibold uppercase tracking-wider mb-2">
                   Responsável
                 </label>
                 <select
                   value={responsavel}
                   onChange={(e) => setResponsavel(e.target.value)}
-                  className="w-full bg-[#11211C] border border-[#1A332A] rounded-xl px-4 py-3 text-sm text-[#E2E8F0] outline-none focus:border-[#4ade80]/50 focus:ring-1 focus:ring-[#4ade80]/50 transition-all appearance-none"
+                  className="w-full bg-bg-surface border border-border rounded-xl px-4 py-3 text-sm text-text-primary outline-none focus:border-accent/50 focus:ring-1 focus:ring-accent/50 transition-all appearance-none"
                 >
                   <option value="cidadao">Cidadão</option>
                   <option value="assistente">Assistente Social</option>
@@ -220,14 +220,14 @@ export default function PlanoAcaoCaso({ casoId, modo }) {
               </div>
 
               <div>
-                <label className="block text-[#7A9C8D] text-xs font-semibold uppercase tracking-wider mb-2">
+                <label className="block text-text-secondary text-xs font-semibold uppercase tracking-wider mb-2">
                   Prazo
                 </label>
                 <input
                   type="date"
                   value={prazo}
                   onChange={(e) => setPrazo(e.target.value)}
-                  className="w-full bg-[#11211C] border border-[#1A332A] rounded-xl px-4 py-3 text-sm text-[#E2E8F0] outline-none focus:border-[#4ade80]/50 focus:ring-1 focus:ring-[#4ade80]/50 transition-all [color-scheme:dark]"
+                  className="w-full bg-bg-surface border border-border rounded-xl px-4 py-3 text-sm text-text-primary outline-none focus:border-accent/50 focus:ring-1 focus:ring-accent/50 transition-all [color-scheme:dark]"
                 />
               </div>
             </div>
@@ -236,7 +236,7 @@ export default function PlanoAcaoCaso({ casoId, modo }) {
               <button
                 type="submit"
                 disabled={salvando || !titulo.trim()}
-                className="w-full flex items-center justify-center gap-2 bg-[#4ade80] hover:bg-[#22c55e] disabled:bg-[#1A332A] disabled:text-[#4A6B5C] text-[#0B1511] py-3 rounded-xl text-sm font-bold transition-all disabled:shadow-none"
+                className="w-full flex items-center justify-center gap-2 bg-accent hover:bg-accent-hover disabled:bg-border disabled:text-text-muted text-text-on-accent py-3 rounded-xl text-sm font-bold transition-all disabled:shadow-none"
               >
                 {salvando ? <Loader2 size={16} className="animate-spin" /> : <Plus size={16} />}
                 {salvando ? 'Processando...' : 'Registrar Tarefa'}
@@ -249,33 +249,33 @@ export default function PlanoAcaoCaso({ casoId, modo }) {
       <div className="flex-1 flex flex-col min-h-0">
         <div className="flex items-center justify-between mb-4 shrink-0">
           <div className="flex items-center gap-2">
-            <ListTodo size={18} className="text-[#7A9C8D]" />
-            <h3 className="text-[#A0BDB0] text-sm font-bold uppercase tracking-widest">
+            <ListTodo size={18} className="text-text-secondary" />
+            <h3 className="text-text-secondary text-sm font-bold uppercase tracking-widest">
               Tarefas
             </h3>
           </div>
-          <span className="bg-[#1A332A] text-[#4ade80] px-2.5 py-0.5 rounded-full text-xs font-bold">
+          <span className="bg-border text-accent px-2.5 py-0.5 rounded-full text-xs font-bold">
             {itens.length}
           </span>
         </div>
 
         {carregando ? (
           <div className="flex flex-col items-center justify-center py-12 gap-3">
-            <Loader2 className="animate-spin text-[#4ade80]" size={28} />
+            <Loader2 className="animate-spin text-accent" size={28} />
           </div>
         ) : itens.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-16 bg-[#0B1511] border border-dashed border-[#1A332A] rounded-2xl">
-            <p className="text-[#7A9C8D] text-sm font-medium">Nenhum registro encontrado.</p>
+          <div className="flex flex-col items-center justify-center py-16 bg-bg-base border border-dashed border-border rounded-2xl">
+            <p className="text-text-secondary text-sm font-medium">Nenhum registro encontrado.</p>
           </div>
         ) : (
           <div className="space-y-3 overflow-y-auto pr-1 custom-scrollbar">
             {itens.map((item) => (
               <div 
                 key={item.id} 
-                className="bg-[#0B1511] border border-[#1A332A] rounded-2xl p-5 hover:border-[#24473B] transition-all group"
+                className="bg-bg-base border border-border rounded-2xl p-5 hover:border-border-hover transition-all group"
               >
                 <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 mb-4">
-                  <h4 className="text-[#E2E8F0] text-base font-bold leading-tight">
+                  <h4 className="text-text-primary text-base font-bold leading-tight">
                     {item.titulo}
                   </h4>
                   <span className={`shrink-0 inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold border tracking-wide uppercase ${obterClasseStatus(item.status)}`}>
@@ -284,36 +284,36 @@ export default function PlanoAcaoCaso({ casoId, modo }) {
                 </div>
 
                 {item.descricao && (
-                  <div className="flex items-start gap-2 mb-4 bg-[#11211C] p-3 rounded-xl border border-[#1A332A]">
-                    <AlignLeft size={14} className="text-[#4A6B5C] shrink-0 mt-0.5" />
-                    <p className="text-[#A0BDB0] text-sm leading-relaxed">
+                  <div className="flex items-start gap-2 mb-4 bg-bg-surface p-3 rounded-xl border border-border">
+                    <AlignLeft size={14} className="text-text-muted shrink-0 mt-0.5" />
+                    <p className="text-text-secondary text-sm leading-relaxed">
                       {item.descricao}
                     </p>
                   </div>
                 )}
 
                 <div className="flex flex-wrap gap-4 mb-5">
-                  <div className="flex items-center gap-1.5 text-[#7A9C8D]">
+                  <div className="flex items-center gap-1.5 text-text-secondary">
                     <User size={14} />
                     <p className="text-xs font-medium">
-                      <span className="text-[#E2E8F0]">{obterTextoResponsavel(item.responsavel)}</span>
+                      <span className="text-text-primary">{obterTextoResponsavel(item.responsavel)}</span>
                     </p>
                   </div>
-                  <div className="flex items-center gap-1.5 text-[#7A9C8D]">
+                  <div className="flex items-center gap-1.5 text-text-secondary">
                     <Calendar size={14} />
                     <p className="text-xs font-medium">
-                      <span className="text-[#E2E8F0]">{formatarPrazo(item.prazo)}</span>
+                      <span className="text-text-primary">{formatarPrazo(item.prazo)}</span>
                     </p>
                   </div>
                 </div>
 
-                <div className="flex flex-wrap items-center gap-2 pt-4 border-t border-[#1A332A]">
+                <div className="flex flex-wrap items-center gap-2 pt-4 border-t border-border">
                   <button
                     onClick={() => atualizarStatus(item, 'pendente')}
                     className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
                       item.status === 'pendente' 
                         ? 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/20 pointer-events-none' 
-                        : 'text-[#7A9C8D] hover:bg-[#11211C] hover:text-white border border-transparent'
+                        : 'text-text-secondary hover:bg-bg-surface hover:text-white border border-transparent'
                     }`}
                   >
                     <Clock size={14} /> Pendente
@@ -324,7 +324,7 @@ export default function PlanoAcaoCaso({ casoId, modo }) {
                     className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
                       item.status === 'em_andamento' 
                         ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20 pointer-events-none' 
-                        : 'text-[#7A9C8D] hover:bg-[#11211C] hover:text-white border border-transparent'
+                        : 'text-text-secondary hover:bg-bg-surface hover:text-white border border-transparent'
                     }`}
                   >
                     <PlayCircle size={14} /> Em Andamento
@@ -335,7 +335,7 @@ export default function PlanoAcaoCaso({ casoId, modo }) {
                     className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
                       item.status === 'concluido' 
                         ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 pointer-events-none' 
-                        : 'text-[#7A9C8D] hover:bg-[#11211C] hover:text-white border border-transparent'
+                        : 'text-text-secondary hover:bg-bg-surface hover:text-white border border-transparent'
                     }`}
                   >
                     <CheckCircle size={14} /> Concluído

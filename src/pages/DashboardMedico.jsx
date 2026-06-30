@@ -128,13 +128,13 @@ export default function DashboardMedico() {
         onClick={() => setFiltroStatus(id)}
         className={`flex flex-col items-start p-5 rounded-2xl border transition-all duration-200 w-full text-left ${
           isAtivo 
-            ? 'bg-[#142921] border-[#4ade80] shadow-[0_0_15px_rgba(74,222,128,0.1)]' 
-            : 'bg-[#11211C] border-[#1A332A] hover:border-[#24473B] hover:bg-[#142921]'
+            ? 'bg-bg-surface-hover border-accent shadow-[0_0_15px_rgba(74,222,128,0.1)]' 
+            : 'bg-bg-surface border-border hover:border-border-hover hover:bg-bg-surface-hover'
         }`}
       >
         <div className="flex items-center gap-2 mb-3">
-          <Icone size={16} className={isAtivo ? 'text-[#4ade80]' : 'text-[#7A9C8D]'} />
-          <span className={`text-xs font-bold uppercase tracking-wider ${isAtivo ? 'text-[#4ade80]' : 'text-[#7A9C8D]'}`}>
+          <Icone size={16} className={isAtivo ? 'text-accent' : 'text-text-secondary'} />
+          <span className={`text-xs font-bold uppercase tracking-wider ${isAtivo ? 'text-accent' : 'text-text-secondary'}`}>
             {titulo}
           </span>
         </div>
@@ -144,17 +144,17 @@ export default function DashboardMedico() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0B1511] font-sans text-slate-200 selection:bg-[#4ade80]/30">
+    <div className="min-h-screen bg-bg-base font-sans text-slate-200 selection:bg-accent/30">
       
       {/* Header */}
-      <header className="sticky top-0 z-10 bg-[#0B1511]/80 backdrop-blur-md border-b border-[#1A332A] px-6 py-4">
+      <header className="sticky top-0 z-10 bg-bg-base/80 backdrop-blur-md border-b border-border px-6 py-4">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="bg-[#1A332A] p-2 rounded-xl">
-              <LayoutDashboard className="text-[#4ade80]" size={24} />
+            <div className="bg-border p-2 rounded-xl">
+              <LayoutDashboard className="text-accent" size={24} />
             </div>
             <div>
-              <p className="text-[#4ade80] text-[10px] uppercase tracking-widest font-bold mb-0.5">
+              <p className="text-accent text-[10px] uppercase tracking-widest font-bold mb-0.5">
                 Plataforma EloSocial
               </p>
               <h1 className="text-xl font-bold tracking-tight text-white">
@@ -166,9 +166,9 @@ export default function DashboardMedico() {
           <button
             onClick={buscarCasos}
             disabled={carregando}
-            className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold border border-[#1A332A] bg-[#11211C] text-[#7A9C8D] hover:text-white hover:border-[#4ade80]/50 hover:bg-[#142921] transition-all disabled:opacity-50"
+            className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold border border-border bg-bg-surface text-text-secondary hover:text-white hover:border-accent/50 hover:bg-bg-surface-hover transition-all disabled:opacity-50"
           >
-            <RefreshCw size={16} className={carregando ? "animate-spin text-[#4ade80]" : ""} />
+            <RefreshCw size={16} className={carregando ? "animate-spin text-accent" : ""} />
             {carregando ? 'Sincronizando...' : 'Atualizar Dados'}
           </button>
         </div>
@@ -186,33 +186,33 @@ export default function DashboardMedico() {
         </div>
 
         {/* Tabela Principal */}
-        <div className="bg-[#11211C] border border-[#1A332A] rounded-3xl overflow-hidden shadow-xl">
+        <div className="bg-bg-surface border border-border rounded-3xl overflow-hidden shadow-xl">
           <div className="overflow-x-auto">
             <table className="w-full text-left whitespace-nowrap md:whitespace-normal">
               <thead>
-                <tr className="bg-[#0B1511] border-b border-[#1A332A]">
-                  <th className="px-6 py-4 text-[#7A9C8D] text-xs font-bold uppercase tracking-wider w-[15%]">Status</th>
-                  <th className="px-6 py-4 text-[#7A9C8D] text-xs font-bold uppercase tracking-wider w-[12%]">Prioridade</th>
-                  <th className="px-6 py-4 text-[#7A9C8D] text-xs font-bold uppercase tracking-wider w-[25%]">Cidadão</th>
-                  <th className="px-6 py-4 text-[#7A9C8D] text-xs font-bold uppercase tracking-wider w-[33%]">Vulnerabilidades</th>
-                  <th className="px-6 py-4 text-[#7A9C8D] text-xs font-bold uppercase tracking-wider text-right w-[15%]">Ação</th>
+                <tr className="bg-bg-base border-b border-border">
+                  <th className="px-6 py-4 text-text-secondary text-xs font-bold uppercase tracking-wider w-[15%]">Status</th>
+                  <th className="px-6 py-4 text-text-secondary text-xs font-bold uppercase tracking-wider w-[12%]">Prioridade</th>
+                  <th className="px-6 py-4 text-text-secondary text-xs font-bold uppercase tracking-wider w-[25%]">Cidadão</th>
+                  <th className="px-6 py-4 text-text-secondary text-xs font-bold uppercase tracking-wider w-[33%]">Vulnerabilidades</th>
+                  <th className="px-6 py-4 text-text-secondary text-xs font-bold uppercase tracking-wider text-right w-[15%]">Ação</th>
                 </tr>
               </thead>
 
-              <tbody className="divide-y divide-[#1A332A]">
+              <tbody className="divide-y divide-border">
                 {carregando ? (
                   <tr>
                     <td colSpan="5" className="px-6 py-16 text-center">
                       <div className="flex flex-col items-center justify-center gap-3">
-                        <div className="w-8 h-8 border-2 border-[#1A332A] border-t-[#4ade80] rounded-full animate-spin"></div>
-                        <p className="text-[#7A9C8D] text-sm">Carregando fila de atendimento...</p>
+                        <div className="w-8 h-8 border-2 border-border border-t-accent rounded-full animate-spin"></div>
+                        <p className="text-text-secondary text-sm">Carregando fila de atendimento...</p>
                       </div>
                     </td>
                   </tr>
                 ) : casosFiltrados.length === 0 ? (
                   <tr>
                     <td colSpan="5" className="px-6 py-16 text-center">
-                      <div className="flex flex-col items-center justify-center gap-2 text-[#7A9C8D]">
+                      <div className="flex flex-col items-center justify-center gap-2 text-text-secondary">
                         <Inbox size={32} className="opacity-50 mb-2" />
                         <p className="text-sm font-medium">Nenhum caso encontrado para este filtro.</p>
                       </div>
@@ -220,7 +220,7 @@ export default function DashboardMedico() {
                   </tr>
                 ) : (
                   casosFiltrados.map((caso) => (
-                    <tr key={caso.id} className="hover:bg-[#142921] transition-colors group">
+                    <tr key={caso.id} className="hover:bg-bg-surface-hover transition-colors group">
                       <td className="px-6 py-4">
                         <div className="flex flex-col gap-2 items-start">
                           {obterStatusBadge(caso.status)}
@@ -240,10 +240,10 @@ export default function DashboardMedico() {
 
                       <td className="px-6 py-4 align-top">
                         <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-full bg-[#1A332A] flex items-center justify-center text-[#7A9C8D] shrink-0">
+                          <div className="w-8 h-8 rounded-full bg-border flex items-center justify-center text-text-secondary shrink-0">
                             <User size={14} />
                           </div>
-                          <p className="text-[#E2E8F0] text-sm font-bold truncate max-w-[200px] md:max-w-none">
+                          <p className="text-text-primary text-sm font-bold truncate max-w-[200px] md:max-w-none">
                             {caso.paciente_nome || 'Não identificado'}
                           </p>
                         </div>
@@ -251,8 +251,8 @@ export default function DashboardMedico() {
 
                       <td className="px-6 py-4 align-top">
                         <div className="flex items-start gap-2">
-                          <AlertCircle size={14} className="text-[#7A9C8D] shrink-0 mt-0.5 hidden md:block" />
-                          <p className="text-[#A0BDB0] text-xs leading-relaxed line-clamp-2">
+                          <AlertCircle size={14} className="text-text-secondary shrink-0 mt-0.5 hidden md:block" />
+                          <p className="text-text-secondary text-xs leading-relaxed line-clamp-2">
                             {formatarSituacoes(caso.sintomas)}
                           </p>
                         </div>
@@ -263,8 +263,8 @@ export default function DashboardMedico() {
                           onClick={() => abrirCaso(caso)}
                           className={`inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-sm ${
                             caso.aguardando_video 
-                              ? 'bg-[#4ade80] text-[#0B1511] hover:bg-[#22c55e] shadow-[0_0_15px_rgba(74,222,128,0.2)] hover:shadow-[0_0_20px_rgba(74,222,128,0.4)]' 
-                              : 'bg-[#1A332A] text-[#4ade80] hover:bg-[#24473B] border border-[#24473B]'
+                              ? 'bg-accent text-bg-base hover:bg-accent-hover shadow-[0_0_15px_rgba(74,222,128,0.2)] hover:shadow-[0_0_20px_rgba(74,222,128,0.4)]' 
+                              : 'bg-border text-accent hover:bg-border-hover border border-border-hover'
                           }`}
                         >
                           Abrir Caso <ArrowRight size={14} />

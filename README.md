@@ -89,35 +89,53 @@ Principais tabelas utilizadas:
 - `plano_acao_itens` — Tarefas do plano de ação
 - `documentos_caso` — Metadados dos documentos no Storage
 
-## Configuração local
+## Execução local (sem Vercel)
+
+O projeto é um **frontend React puro** com Vite — não precisa de Vercel nem de qualquer servidor Node para rodar. O Vercel é usado apenas para deploy.
+
+### Pré-requisitos
+
+- **Node.js 18+** e **npm** instalados
+- **Projeto Supabase** ativo ([supabase.com](https://supabase.com)) com as tabelas configuradas
+- **Daily.co** — a chave da API vai como secret na Edge Function do Supabase, não no frontend
+
+### Passo a passo
 
 ```bash
-# Clone o repositório
+# 1. Clone o repositório
 git clone <url-do-repositorio>
 cd Telemedicina
 
-# Instale as dependências
+# 2. Instale as dependências
 npm install
 
-# Configure as variáveis de ambiente
+# 3. Configure as variáveis de ambiente
 cp .env.example .env
-# Edite .env com suas credenciais do Supabase e Daily.co
 
-# Inicie o servidor de desenvolvimento
-npm run dev
-```
-
-## Variáveis de ambiente
-
-```env
+# 4. Edite .env com suas credenciais do Supabase (APENAS as duas VITE_*)
 VITE_SUPABASE_URL=https://seu-projeto.supabase.co
 VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIs...
-DAILY_API_KEY=suachavedaily
+
+# 5. Inicie o servidor de desenvolvimento
+npm run dev
+# → Vite sobe em http://localhost:5173
+
+# 6. (opcional) Build de produção local
+npm run build
+npm run preview
 ```
 
-A `DAILY_API_KEY` é usada apenas pela Edge Function do Supabase (server-side).
+### Variáveis de ambiente
 
-## Scripts
+| Variável | Obrigatória | Descrição |
+|----------|-------------|-----------|
+| `VITE_SUPABASE_URL` | Sim | URL do projeto Supabase |
+| `VITE_SUPABASE_ANON_KEY` | Sim | Chave anônima pública do Supabase |
+| `DAILY_API_KEY` | Não (frontend) | Usada apenas na Edge Function do Supabase (server-side) |
+
+> ⚠️ A `DAILY_API_KEY` **não** precisa ser definida no `.env` do frontend. Ela vai como variável de ambiente na Edge Function `criar-sala-daily` dentro do próprio Supabase.
+
+### Scripts
 
 | Comando | Descrição |
 |---------|-----------|
@@ -126,9 +144,10 @@ A `DAILY_API_KEY` é usada apenas pela Edge Function do Supabase (server-side).
 | `npm run preview` | Preview do build local |
 | `npm run lint` | Executa ESLint |
 
-## Deploy
+## Deploy (Vercel)
 
-O projeto está configurado para deploy na Vercel como SPA (`vercel.json` com rewrites para todas as rotas servirem `index.html`).
+O projeto está configurado para deploy na Vercel como SPA (`vercel.json` com rewrites para todas as rotas servirem `index.html`).  
+Não é necessário para execução local.
 
 ## Design
 

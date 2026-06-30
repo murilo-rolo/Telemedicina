@@ -203,15 +203,15 @@ export default function DocumentosCaso({ casoId, enviadoPorTipo }) {
     <div className="space-y-8 h-full flex flex-col">
       
       {/* Formulário de Upload */}
-      <form onSubmit={enviarDocumento} className="bg-[#0B1511] border border-[#1A332A] rounded-2xl p-5 md:p-6 shadow-sm shrink-0">
-        <h3 className="text-[#4ade80] text-sm font-bold uppercase tracking-widest mb-5 flex items-center gap-2">
+      <form onSubmit={enviarDocumento} className="bg-bg-base border border-border rounded-2xl p-5 md:p-6 shadow-sm shrink-0">
+        <h3 className="text-accent text-sm font-bold uppercase tracking-widest mb-5 flex items-center gap-2">
           <UploadCloud size={16} /> Adicionar Documento
         </h3>
 
         <div className="space-y-5">
           {/* Área de Upload Customizada */}
           <div>
-            <label className="block text-[#7A9C8D] text-xs font-semibold uppercase tracking-wider mb-2">
+            <label className="block text-text-secondary text-xs font-semibold uppercase tracking-wider mb-2">
               Arquivo
             </label>
             
@@ -225,23 +225,23 @@ export default function DocumentosCaso({ casoId, enviadoPorTipo }) {
             {!arquivo ? (
               <label 
                 htmlFor="arquivo-cofre-digital"
-                className="flex flex-col items-center justify-center w-full h-32 px-4 border-2 border-dashed border-[#1A332A] rounded-xl bg-[#11211C] hover:bg-[#142921] hover:border-[#4ade80]/50 transition-all cursor-pointer group"
+                className="flex flex-col items-center justify-center w-full h-32 px-4 border-2 border-dashed border-border rounded-xl bg-bg-surface hover:bg-bg-surface-hover hover:border-accent/50 transition-all cursor-pointer group"
               >
-                <div className="w-10 h-10 bg-[#0B1511] rounded-full flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
-                  <UploadCloud size={20} className="text-[#4ade80]" />
+                <div className="w-10 h-10 bg-bg-base rounded-full flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
+                  <UploadCloud size={20} className="text-accent" />
                 </div>
-                <p className="text-sm font-semibold text-[#E2E8F0]">Clique para selecionar</p>
-                <p className="text-xs text-[#4A6B5C] mt-1">PDF, JPG, PNG aceitos</p>
+                <p className="text-sm font-semibold text-text-primary">Clique para selecionar</p>
+                <p className="text-xs text-text-muted mt-1">PDF, JPG, PNG aceitos</p>
               </label>
             ) : (
-              <div className="flex items-center justify-between w-full p-4 border border-[#4ade80]/30 bg-[#4ade80]/5 rounded-xl">
+              <div className="flex items-center justify-between w-full p-4 border border-accent/30 bg-accent/5 rounded-xl">
                 <div className="flex items-center gap-3 overflow-hidden">
-                  <div className="p-2 bg-[#0B1511] rounded-lg text-[#4ade80] shrink-0">
+                  <div className="p-2 bg-bg-base rounded-lg text-accent shrink-0">
                     <File size={20} />
                   </div>
                   <div className="truncate">
-                    <p className="text-sm font-bold text-[#E2E8F0] truncate">{arquivo.name}</p>
-                    <p className="text-xs text-[#7A9C8D]">{formatarTamanho(arquivo.size)}</p>
+                    <p className="text-sm font-bold text-text-primary truncate">{arquivo.name}</p>
+                    <p className="text-xs text-text-secondary">{formatarTamanho(arquivo.size)}</p>
                   </div>
                 </div>
                 <button
@@ -251,7 +251,7 @@ export default function DocumentosCaso({ casoId, enviadoPorTipo }) {
                     const input = document.getElementById('arquivo-cofre-digital');
                     if(input) input.value = '';
                   }}
-                  className="p-2 text-[#7A9C8D] hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-colors shrink-0"
+                  className="p-2 text-text-secondary hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-colors shrink-0"
                   title="Remover arquivo selecionado"
                 >
                   <X size={18} />
@@ -261,14 +261,14 @@ export default function DocumentosCaso({ casoId, enviadoPorTipo }) {
           </div>
 
           <div>
-            <label className="block text-[#7A9C8D] text-xs font-semibold uppercase tracking-wider mb-2">
+            <label className="block text-text-secondary text-xs font-semibold uppercase tracking-wider mb-2">
               Descrição
             </label>
             <textarea
               value={descricao}
               onChange={(e) => setDescricao(e.target.value)}
               rows="2"
-              className="w-full bg-[#11211C] border border-[#1A332A] rounded-xl px-4 py-3 text-sm text-[#E2E8F0] outline-none focus:border-[#4ade80]/50 focus:ring-1 focus:ring-[#4ade80]/50 resize-none transition-all"
+              className="w-full bg-bg-surface border border-border rounded-xl px-4 py-3 text-sm text-text-primary outline-none focus:border-accent/50 focus:ring-1 focus:ring-accent/50 resize-none transition-all"
             ></textarea>
           </div>
 
@@ -276,7 +276,7 @@ export default function DocumentosCaso({ casoId, enviadoPorTipo }) {
             <button
               type="submit"
               disabled={enviando || !arquivo}
-              className="w-full flex items-center justify-center gap-2 bg-[#4ade80] hover:bg-[#22c55e] disabled:bg-[#1A332A] disabled:text-[#4A6B5C] text-[#0B1511] py-3 rounded-xl text-sm font-bold transition-all disabled:shadow-none"
+              className="w-full flex items-center justify-center gap-2 bg-accent hover:bg-accent-hover disabled:bg-border disabled:text-text-muted text-text-on-accent py-3 rounded-xl text-sm font-bold transition-all disabled:shadow-none"
             >
               {enviando ? <Loader2 size={16} className="animate-spin" /> : <ShieldCheck size={16} />}
               {enviando ? 'Criptografando e enviando...' : 'Salvar no Cofre Digital'}
@@ -289,58 +289,58 @@ export default function DocumentosCaso({ casoId, enviadoPorTipo }) {
       <div className="flex-1 flex flex-col min-h-0">
         <div className="flex items-center justify-between mb-4 shrink-0">
           <div className="flex items-center gap-2">
-            <FileText size={18} className="text-[#7A9C8D]" />
-            <h3 className="text-[#A0BDB0] text-sm font-bold uppercase tracking-widest">
+            <FileText size={18} className="text-text-secondary" />
+            <h3 className="text-text-secondary text-sm font-bold uppercase tracking-widest">
               Arquivos Armazenados
             </h3>
           </div>
-          <span className="bg-[#1A332A] text-[#4ade80] px-2.5 py-0.5 rounded-full text-xs font-bold">
+          <span className="bg-border text-accent px-2.5 py-0.5 rounded-full text-xs font-bold">
             {documentos.length}
           </span>
         </div>
 
         {carregando ? (
           <div className="flex flex-col items-center justify-center py-12 gap-3">
-            <Loader2 className="animate-spin text-[#4ade80]" size={28} />
+            <Loader2 className="animate-spin text-accent" size={28} />
           </div>
         ) : documentos.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-16 text-center bg-[#0B1511] border border-dashed border-[#1A332A] rounded-2xl">
-            <ShieldCheck size={32} className="text-[#4A6B5C] mb-3 opacity-50" />
-            <p className="text-[#E2E8F0] text-sm font-bold mb-1">Nenhum documento enviado ainda</p>
-            <p className="text-[#7A9C8D] text-xs">Os documentos enviados aparecerão aqui.</p>
+          <div className="flex flex-col items-center justify-center py-16 text-center bg-bg-base border border-dashed border-border rounded-2xl">
+            <ShieldCheck size={32} className="text-text-muted mb-3 opacity-50" />
+            <p className="text-text-primary text-sm font-bold mb-1">Nenhum documento enviado ainda</p>
+            <p className="text-text-secondary text-xs">Os documentos enviados aparecerão aqui.</p>
           </div>
         ) : (
           <div className="space-y-3 overflow-y-auto pr-1 custom-scrollbar">
             {documentos.map((documento) => (
               <div 
                 key={documento.id} 
-                className="bg-[#0B1511] border border-[#1A332A] rounded-2xl p-4 sm:p-5 hover:border-[#24473B] transition-all group flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+                className="bg-bg-base border border-border rounded-2xl p-4 sm:p-5 hover:border-border-hover transition-all group flex flex-col sm:flex-row sm:items-center justify-between gap-4"
               >
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-3 mb-2">
-                    <div className="p-2 bg-[#11211C] rounded-lg text-[#4ade80] shrink-0 border border-[#1A332A]">
+                    <div className="p-2 bg-bg-surface rounded-lg text-accent shrink-0 border border-border">
                       <FileText size={16} />
                     </div>
-                    <p className="text-[#E2E8F0] text-sm font-bold truncate">
+                    <p className="text-text-primary text-sm font-bold truncate">
                       {documento.nome_arquivo}
                     </p>
                   </div>
 
                   {documento.descricao && (
-                    <p className="text-[#A0BDB0] text-xs leading-relaxed mb-3 pl-11">
+                    <p className="text-text-secondary text-xs leading-relaxed mb-3 pl-11">
                       {documento.descricao}
                     </p>
                   )}
 
                   <div className="flex flex-wrap items-center gap-x-4 gap-y-2 mt-2 pl-11">
-                    <p className="text-[#4A6B5C] text-[10px] font-bold uppercase tracking-wider">
-                      Enviado por: <span className="text-[#7A9C8D]">{obterTextoTipo(documento.enviado_por_tipo)}</span>
+                    <p className="text-text-muted text-[10px] font-bold uppercase tracking-wider">
+                      Enviado por: <span className="text-text-secondary">{obterTextoTipo(documento.enviado_por_tipo)}</span>
                     </p>
-                    <p className="text-[#4A6B5C] text-[10px] font-bold uppercase tracking-wider">
-                      Tamanho: <span className="text-[#7A9C8D]">{formatarTamanho(documento.tamanho_bytes)}</span>
+                    <p className="text-text-muted text-[10px] font-bold uppercase tracking-wider">
+                      Tamanho: <span className="text-text-secondary">{formatarTamanho(documento.tamanho_bytes)}</span>
                     </p>
-                    <p className="text-[#4A6B5C] text-[10px] font-bold uppercase tracking-wider">
-                      Data: <span className="text-[#7A9C8D]">{formatarData(documento.created_at)}</span>
+                    <p className="text-text-muted text-[10px] font-bold uppercase tracking-wider">
+                      Data: <span className="text-text-secondary">{formatarData(documento.created_at)}</span>
                     </p>
                   </div>
                 </div>
@@ -348,7 +348,7 @@ export default function DocumentosCaso({ casoId, enviadoPorTipo }) {
                 <div className="flex sm:flex-col gap-2 shrink-0 pl-11 sm:pl-0">
                   <button
                     onClick={() => abrirDocumento(documento)}
-                    className="flex-1 sm:flex-none flex items-center justify-center gap-2 bg-[#1A332A] hover:bg-[#24473B] text-[#4ade80] px-4 py-2 rounded-xl text-xs font-bold transition-all"
+                    className="flex-1 sm:flex-none flex items-center justify-center gap-2 bg-border hover:bg-border-hover text-accent px-4 py-2 rounded-xl text-xs font-bold transition-all"
                   >
                     <ExternalLink size={14} /> Abrir
                   </button>

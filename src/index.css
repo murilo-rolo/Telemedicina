@@ -1,1 +1,47 @@
 @import "tailwindcss";
+
+@theme {
+  /* ── Paleta Principal (profissional) ── */
+  --color-bg-base: #0B1511;
+  --color-bg-surface: #11211C;
+  --color-bg-surface-hover: #142921;
+  --color-bg-elevated: #0D1D18;
+  --color-bg-input: #07110E;
+  --color-bg-progress: #183429;
+  --color-bg-video: #050A08;
+  --color-border: #1A332A;
+  --color-border-hover: #24473B;
+  --color-text-primary: #E2E8F0;
+  --color-text-secondary: #7A9C8D;
+  --color-text-muted: #4A6B5C;
+  --color-text-on-accent: #06100C;
+  --color-accent: #4ade80;
+  --color-accent-hover: #22c55e;
+  --color-accent-muted: #183429;
+  --color-text-label: #8FB5A4;
+  --color-text-body: #B7D2C6;
+  --color-text-disabled: #6B8F7F;
+  --color-border-muted: #1B3A30;
+  --color-border-accent: #2E5D4E;
+  --color-bg-icon: #10251E;
+
+  /* ── Paleta Cidadão ── */
+  --color-citz-bg-base: #0d1f1a;
+  --color-citz-bg-surface: #111f1a;
+  --color-citz-bg-hover: #1a3d30;
+  --color-citz-border: #2a6b52;
+  --color-citz-border-hover: #1e3b2e;
+  --color-citz-accent: #4ab882;
+  --color-citz-text-primary: #e8f0ec;
+  --color-citz-text-secondary: #5a8a72;
+  --color-citz-text-on-accent: #0d1f1a;
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@utility animate-fadeUp {
+  animation: fade-up 0.6s ease-out both;
+}

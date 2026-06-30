@@ -272,20 +272,20 @@ export default function ConsultaMedico() {
 
   const CardAcolhimento = ({ titulo, valor, Icone, destaque }) => (
     <div
-      className={`border rounded-2xl p-4 transition-all hover:border-[#24473B] ${
+      className={`border rounded-2xl p-4 transition-all hover:border-border-hover ${
         destaque
-          ? 'bg-[#0B1511] border-[#4ade80]/30'
-          : 'bg-[#11211C] border-[#1A332A]'
+          ? 'bg-bg-base border-accent/30'
+          : 'bg-bg-surface border-border'
       }`}
     >
       <div className="flex items-center gap-2 mb-2">
-        {Icone && <Icone size={14} className="text-[#4ade80] opacity-80" />}
-        <p className="text-[#7A9C8D] text-[10px] font-semibold uppercase tracking-wider">
+        {Icone && <Icone size={14} className="text-accent opacity-80" />}
+        <p className="text-text-secondary text-[10px] font-semibold uppercase tracking-wider">
           {titulo}
         </p>
       </div>
 
-      <p className="text-[#E2E8F0] text-sm leading-relaxed font-medium">
+      <p className="text-text-primary text-sm leading-relaxed font-medium">
         {valor || 'Não informado'}
       </p>
     </div>
@@ -297,15 +297,15 @@ export default function ConsultaMedico() {
       disabled={disabled}
       className={`w-full group flex items-center gap-3 border rounded-2xl p-4 text-left transition-all disabled:opacity-40 disabled:cursor-not-allowed ${
         destaque
-          ? 'border-[#4ade80]/40 bg-[#4ade80]/10 hover:bg-[#4ade80]/15'
-          : 'border-[#1A332A] bg-[#0B1511] hover:border-[#4ade80]/50 hover:bg-[#142921]'
+          ? 'border-accent/40 bg-accent/10 hover:bg-accent/15'
+          : 'border-border bg-bg-base hover:border-accent/50 hover:bg-bg-surface-hover'
       }`}
     >
       <div
         className={`p-2 rounded-lg transition-colors ${
           destaque
-            ? 'bg-[#4ade80]/20 text-[#4ade80]'
-            : 'bg-[#1A332A] text-[#7A9C8D] group-hover:bg-[#4ade80]/20 group-hover:text-[#4ade80]'
+            ? 'bg-accent/20 text-accent'
+            : 'bg-border text-text-secondary group-hover:bg-accent/20 group-hover:text-accent'
         }`}
       >
         <Icone size={18} />
@@ -313,19 +313,19 @@ export default function ConsultaMedico() {
 
       <div className="flex-1">
         <p className="text-sm font-semibold text-white">{titulo}</p>
-        <p className="text-[10px] text-[#7A9C8D] mt-0.5">{subtitulo}</p>
+        <p className="text-[10px] text-text-secondary mt-0.5">{subtitulo}</p>
       </div>
 
-      <ChevronRight size={16} className="text-[#4A6B5C] group-hover:text-[#4ade80] transition-colors" />
+      <ChevronRight size={16} className="text-text-muted group-hover:text-accent transition-colors" />
     </button>
   )
 
   if (carregando) {
     return (
-      <div className="min-h-screen bg-[#0B1511] flex items-center justify-center font-sans">
+      <div className="min-h-screen bg-bg-base flex items-center justify-center font-sans">
         <div className="flex flex-col items-center gap-4">
-          <div className="w-10 h-10 border-2 border-[#1A332A] border-t-[#4ade80] rounded-full animate-spin"></div>
-          <p className="text-[#7A9C8D] text-sm font-medium tracking-wide">
+          <div className="w-10 h-10 border-2 border-border border-t-accent rounded-full animate-spin"></div>
+          <p className="text-text-secondary text-sm font-medium tracking-wide">
             Carregando contexto social...
           </p>
         </div>
@@ -339,19 +339,19 @@ export default function ConsultaMedico() {
   const pontuacaoRisco = dadosAcolhimento.pontuacao || 'Não informado'
 
   return (
-    <div className="min-h-screen bg-[#0B1511] text-slate-200 font-sans selection:bg-[#4ade80]/30">
-      <header className="sticky top-0 z-10 bg-[#0B1511]/80 backdrop-blur-md border-b border-[#1A332A] px-6 py-4">
+    <div className="min-h-screen bg-bg-base text-slate-200 font-sans selection:bg-accent/30">
+      <header className="sticky top-0 z-10 bg-bg-base/80 backdrop-blur-md border-b border-border px-6 py-4">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             <button
               onClick={() => navigate('/dashboard-medico')}
-              className="p-2 -ml-2 rounded-xl text-[#7A9C8D] hover:text-white hover:bg-[#11211C] transition-colors"
+              className="p-2 -ml-2 rounded-xl text-text-secondary hover:text-white hover:bg-bg-surface transition-colors"
             >
               <ChevronLeft size={20} />
             </button>
 
             <div>
-              <p className="text-[#4ade80] text-[10px] uppercase tracking-widest font-bold mb-0.5">
+              <p className="text-accent text-[10px] uppercase tracking-widest font-bold mb-0.5">
                 Plataforma EloSocial
               </p>
 
@@ -364,7 +364,7 @@ export default function ConsultaMedico() {
           <div className="flex flex-wrap gap-3">
             <button
               onClick={sair}
-              className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold border border-[#1A332A] text-[#7A9C8D] bg-[#11211C] hover:text-white hover:border-[#24473B] transition-all"
+              className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold border border-border text-text-secondary bg-bg-surface hover:text-white hover:border-border-hover transition-all"
             >
               <LogOut size={16} />
               Sair
@@ -384,7 +384,7 @@ export default function ConsultaMedico() {
 
       <main className="max-w-7xl mx-auto p-6 grid lg:grid-cols-12 gap-6 items-start">
         <div className="lg:col-span-8 space-y-6">
-          <section className="bg-[#11211C] border border-[#1A332A] rounded-3xl p-6 md:p-8">
+          <section className="bg-bg-surface border border-border rounded-3xl p-6 md:p-8">
             <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-8">
               <div>
                 <h2 className="text-3xl font-bold text-white tracking-tight mb-3">
@@ -410,8 +410,8 @@ export default function ConsultaMedico() {
 
             <div className="space-y-8">
               <div>
-                <h3 className="text-[#7A9C8D] text-xs font-bold uppercase tracking-widest mb-4 flex items-center gap-2">
-                  <Activity size={14} className="text-[#4ade80]" />
+                <h3 className="text-text-secondary text-xs font-bold uppercase tracking-widest mb-4 flex items-center gap-2">
+                  <Activity size={14} className="text-accent" />
                   Classificação interna
                 </h3>
 
@@ -440,8 +440,8 @@ export default function ConsultaMedico() {
               </div>
 
               <div>
-                <h3 className="text-[#7A9C8D] text-xs font-bold uppercase tracking-widest mb-4 flex items-center gap-2">
-                  <User size={14} className="text-[#4ade80]" />
+                <h3 className="text-text-secondary text-xs font-bold uppercase tracking-widest mb-4 flex items-center gap-2">
+                  <User size={14} className="text-accent" />
                   Identificação e contato
                 </h3>
 
@@ -473,8 +473,8 @@ export default function ConsultaMedico() {
               </div>
 
               <div>
-                <h3 className="text-[#7A9C8D] text-xs font-bold uppercase tracking-widest mb-4 flex items-center gap-2">
-                  <Home size={14} className="text-[#4ade80]" />
+                <h3 className="text-text-secondary text-xs font-bold uppercase tracking-widest mb-4 flex items-center gap-2">
+                  <Home size={14} className="text-accent" />
                   Território e localização
                 </h3>
 
@@ -500,8 +500,8 @@ export default function ConsultaMedico() {
               </div>
 
               <div>
-                <h3 className="text-[#7A9C8D] text-xs font-bold uppercase tracking-widest mb-4 flex items-center gap-2">
-                  <Users size={14} className="text-[#4ade80]" />
+                <h3 className="text-text-secondary text-xs font-bold uppercase tracking-widest mb-4 flex items-center gap-2">
+                  <Users size={14} className="text-accent" />
                   Família, renda e benefícios
                 </h3>
 
@@ -536,7 +536,7 @@ export default function ConsultaMedico() {
 
               {dadosAcolhimento.situacoes.length > 0 && (
                 <div>
-                  <h3 className="text-[#7A9C8D] text-xs font-bold uppercase tracking-widest mb-4">
+                  <h3 className="text-text-secondary text-xs font-bold uppercase tracking-widest mb-4">
                     Vulnerabilidades mapeadas
                   </h3>
 
@@ -544,7 +544,7 @@ export default function ConsultaMedico() {
                     {dadosAcolhimento.situacoes.map((situacao) => (
                       <span
                         key={situacao}
-                        className="bg-[#1A332A] text-[#4ade80] px-3.5 py-1.5 rounded-lg text-xs font-medium border border-[#24473B]"
+                        className="bg-border text-accent px-3.5 py-1.5 rounded-lg text-xs font-medium border border-border-hover"
                       >
                         {situacao}
                       </span>
@@ -555,13 +555,13 @@ export default function ConsultaMedico() {
 
               {dadosAcolhimento.relato && (
                 <div>
-                  <h3 className="text-[#7A9C8D] text-xs font-bold uppercase tracking-widest mb-4 flex items-center gap-2">
-                    <MessageSquare size={14} className="text-[#4ade80]" />
+                  <h3 className="text-text-secondary text-xs font-bold uppercase tracking-widest mb-4 flex items-center gap-2">
+                    <MessageSquare size={14} className="text-accent" />
                     Relato direto
                   </h3>
 
-                  <div className="bg-[#0B1511] border border-[#1A332A] rounded-2xl p-5">
-                    <p className="text-[#A0BDB0] text-sm leading-relaxed whitespace-pre-wrap italic">
+                  <div className="bg-bg-base border border-border rounded-2xl p-5">
+                    <p className="text-text-secondary text-sm leading-relaxed whitespace-pre-wrap italic">
                       "{dadosAcolhimento.relato}"
                     </p>
                   </div>
@@ -572,8 +572,8 @@ export default function ConsultaMedico() {
         </div>
 
         <div className="lg:col-span-4 space-y-6">
-          <section className="bg-[#11211C] border border-[#1A332A] rounded-3xl p-6">
-            <h3 className="text-[#7A9C8D] text-xs font-bold uppercase tracking-widest mb-4">
+          <section className="bg-bg-surface border border-border rounded-3xl p-6">
+            <h3 className="text-text-secondary text-xs font-bold uppercase tracking-widest mb-4">
               Ferramentas
             </h3>
 

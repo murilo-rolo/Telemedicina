@@ -96,8 +96,8 @@ const ETAPAS = [
 function CampoTexto({ label, value, onChange, Icone, type = "text", required = false, textarea = false, rows = 4 }) {
   return (
     <div>
-      <label className="flex items-center gap-2 text-[#8FB5A4] text-[11px] font-bold uppercase tracking-[0.18em] mb-2.5">
-        {Icone && <Icone size={14} className="text-[#4ade80]" />}
+      <label className="flex items-center gap-2 text-text-label text-[11px] font-bold uppercase tracking-[0.18em] mb-2.5">
+        {Icone && <Icone size={14} className="text-accent" />}
         {label}
         {required && <span className="text-[#f87171]">*</span>}
       </label>
@@ -107,14 +107,14 @@ function CampoTexto({ label, value, onChange, Icone, type = "text", required = f
           rows={rows}
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className="w-full bg-[#07110E] border border-[#1B3A30] rounded-2xl px-4 py-3.5 text-[#E8F5EE] text-sm outline-none resize-none focus:border-[#4ade80]/70 focus:ring-4 focus:ring-[#4ade80]/10 transition-all"
+          className="w-full bg-bg-input border border-border-muted rounded-2xl px-4 py-3.5 text-text-primary text-sm outline-none resize-none focus:border-accent/70 focus:ring-4 focus:ring-accent/10 transition-all"
         />
       ) : (
         <input
           type={type}
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className="w-full bg-[#07110E] border border-[#1B3A30] rounded-2xl px-4 py-3.5 text-[#E8F5EE] text-sm outline-none focus:border-[#4ade80]/70 focus:ring-4 focus:ring-[#4ade80]/10 transition-all"
+          className="w-full bg-bg-input border border-border-muted rounded-2xl px-4 py-3.5 text-text-primary text-sm outline-none focus:border-accent/70 focus:ring-4 focus:ring-accent/10 transition-all"
         />
       )}
     </div>
@@ -124,15 +124,15 @@ function CampoTexto({ label, value, onChange, Icone, type = "text", required = f
 function CampoSelect({ label, value, onChange, Icone, children }) {
   return (
     <div>
-      <label className="flex items-center gap-2 text-[#8FB5A4] text-[11px] font-bold uppercase tracking-[0.18em] mb-2.5">
-        {Icone && <Icone size={14} className="text-[#4ade80]" />}
+      <label className="flex items-center gap-2 text-text-label text-[11px] font-bold uppercase tracking-[0.18em] mb-2.5">
+        {Icone && <Icone size={14} className="text-accent" />}
         {label}
       </label>
 
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full bg-[#07110E] border border-[#1B3A30] rounded-2xl px-4 py-3.5 text-[#E8F5EE] text-sm outline-none focus:border-[#4ade80]/70 focus:ring-4 focus:ring-[#4ade80]/10 transition-all"
+        className="w-full bg-bg-input border border-border-muted rounded-2xl px-4 py-3.5 text-text-primary text-sm outline-none focus:border-accent/70 focus:ring-4 focus:ring-accent/10 transition-all"
       >
         {children}
       </select>
@@ -145,30 +145,30 @@ function CartaoOpcao({ titulo, Icone, selecionado, onClick }) {
     <button
       type="button"
       onClick={onClick}
-      className={`group relative overflow-hidden min-h-32 rounded-3xl border p-5 text-left transition-all duration-200 ${
-        selecionado
-          ? "border-[#4ade80]/70 bg-[#4ade80]/12 shadow-[0_18px_45px_rgba(74,222,128,0.08)]"
-          : "border-[#1B3A30] bg-[#07110E] hover:border-[#2E5D4E] hover:bg-[#0D1D18]"
-      }`}
-    >
-      <div className="absolute -right-8 -top-8 w-24 h-24 rounded-full bg-[#4ade80]/0 group-hover:bg-[#4ade80]/5 transition-all" />
+       className={`group relative overflow-hidden min-h-32 rounded-3xl border p-5 text-left transition-all duration-200 ${
+         selecionado
+           ? "border-accent/70 bg-accent/12 shadow-[0_18px_45px_rgba(74,222,128,0.08)]"
+           : "border-border-muted bg-bg-input hover:border-border-accent hover:bg-bg-elevated"
+       }`}
+     >
+       <div className="absolute -right-8 -top-8 w-24 h-24 rounded-full bg-accent/0 group-hover:bg-accent/5 transition-all" />
 
-      <div className="relative flex items-start justify-between gap-3 mb-5">
-        <div
-          className={`w-11 h-11 rounded-2xl flex items-center justify-center transition-all ${
-            selecionado
-              ? "bg-[#4ade80] text-[#06100C]"
-              : "bg-[#10251E] text-[#8FB5A4] group-hover:text-[#4ade80]"
-          }`}
-        >
-          <Icone size={19} />
-        </div>
+       <div className="relative flex items-start justify-between gap-3 mb-5">
+         <div
+           className={`w-11 h-11 rounded-2xl flex items-center justify-center transition-all ${
+             selecionado
+               ? "bg-accent text-text-on-accent"
+               : "bg-bg-icon text-text-label group-hover:text-accent"
+           }`}
+         >
+           <Icone size={19} />
+         </div>
 
-        <div
-          className={`w-6 h-6 rounded-full border flex items-center justify-center transition-all ${
-            selecionado
-              ? "bg-[#4ade80] border-[#4ade80] text-[#06100C]"
-              : "border-[#2E5D4E] text-transparent"
+         <div
+           className={`w-6 h-6 rounded-full border flex items-center justify-center transition-all ${
+             selecionado
+               ? "bg-accent border-accent text-text-on-accent"
+               : "border-border-accent text-transparent"
           }`}
         >
           <Check size={14} />
@@ -187,18 +187,18 @@ function BotaoSelecao({ children, selecionado, onClick }) {
     <button
       type="button"
       onClick={onClick}
-      className={`rounded-2xl border px-4 py-3.5 text-left transition-all duration-200 ${
-        selecionado
-          ? "border-[#4ade80]/70 bg-[#4ade80]/12 text-white"
-          : "border-[#1B3A30] bg-[#07110E] text-[#B7D2C6] hover:border-[#2E5D4E] hover:bg-[#0D1D18]"
-      }`}
-    >
-      <div className="flex items-start gap-3">
-        <div
-          className={`w-5 h-5 rounded-md border flex items-center justify-center shrink-0 mt-0.5 transition-all ${
-            selecionado
-              ? "bg-[#4ade80] border-[#4ade80] text-[#06100C]"
-              : "border-[#2E5D4E] text-transparent"
+       className={`rounded-2xl border px-4 py-3.5 text-left transition-all duration-200 ${
+         selecionado
+           ? "border-accent/70 bg-accent/12 text-white"
+           : "border-border-muted bg-bg-input text-text-body hover:border-border-accent hover:bg-bg-elevated"
+       }`}
+     >
+       <div className="flex items-start gap-3">
+         <div
+           className={`w-5 h-5 rounded-md border flex items-center justify-center shrink-0 mt-0.5 transition-all ${
+             selecionado
+               ? "bg-accent border-accent text-text-on-accent"
+               : "border-border-accent text-transparent"
           }`}
         >
           <Check size={13} />
@@ -222,18 +222,18 @@ function PainelLateral({
 }) {
   return (
     <aside className="lg:col-span-4 lg:sticky lg:top-24">
-      <div className="relative overflow-hidden rounded-[2rem] border border-[#1B3A30] bg-[#0D1D18] p-6 shadow-2xl">
-        <div className="absolute -top-20 -right-20 w-52 h-52 rounded-full bg-[#4ade80]/10 blur-3xl" />
+      <div className="relative overflow-hidden rounded-[2rem] border border-border-muted bg-bg-elevated p-6 shadow-2xl">
+        <div className="absolute -top-20 -right-20 w-52 h-52 rounded-full bg-accent/10 blur-3xl" />
         <div className="absolute -bottom-24 -left-24 w-60 h-60 rounded-full bg-emerald-300/5 blur-3xl" />
 
         <div className="relative">
           <div className="flex items-center gap-2 mb-7">
-            <div className="w-10 h-10 rounded-2xl bg-[#4ade80] text-[#06100C] flex items-center justify-center">
+            <div className="w-10 h-10 rounded-2xl bg-accent text-text-on-accent flex items-center justify-center">
               <HeartHandshake size={20} />
             </div>
 
             <div>
-              <p className="text-[#4ade80] text-[10px] uppercase tracking-[0.2em] font-black">
+              <p className="text-accent text-[10px] uppercase tracking-[0.2em] font-black">
                 EloSocial
               </p>
               <p className="text-white text-sm font-bold">Acolhimento guiado</p>
@@ -243,22 +243,22 @@ function PainelLateral({
           <div className="mb-7">
             <div className="flex items-end justify-between mb-3">
               <div>
-                <p className="text-[#8FB5A4] text-[10px] uppercase tracking-[0.18em] font-bold mb-1">
+                <p className="text-text-label text-[10px] uppercase tracking-[0.18em] font-bold mb-1">
                   Progresso
                 </p>
                 <p className="text-white text-3xl font-black">{progressoReal}%</p>
               </div>
 
-              <div className="w-14 h-14 rounded-2xl bg-[#07110E] border border-[#1B3A30] flex items-center justify-center">
-                <span className="text-[#4ade80] text-sm font-black">
+              <div className="w-14 h-14 rounded-2xl bg-bg-input border border-border-muted flex items-center justify-center">
+                <span className="text-accent text-sm font-black">
                   {etapaAtual + 1}/{ETAPAS.length}
                 </span>
               </div>
             </div>
 
-            <div className="h-2 bg-[#183429] rounded-full overflow-hidden">
+            <div className="h-2 bg-bg-progress rounded-full overflow-hidden">
               <div
-                className="h-full bg-[#4ade80] rounded-full transition-all duration-300"
+                className="h-full bg-accent rounded-full transition-all duration-300"
                 style={{ width: `${progressoReal}%` }}
               />
             </div>
@@ -274,19 +274,19 @@ function PainelLateral({
                   key={etapa.titulo}
                   type="button"
                   onClick={() => onMudarEtapa(index)}
-                  className={`w-full text-left flex items-center gap-3 rounded-2xl border px-4 py-3 transition-all hover:bg-[#0D1D18] cursor-pointer ${
+                  className={`w-full text-left flex items-center gap-3 rounded-2xl border px-4 py-3 transition-all hover:bg-bg-elevated cursor-pointer ${
                     ativa
-                      ? "border-[#4ade80]/60 bg-[#4ade80]/10"
-                      : "border-[#1B3A30] bg-[#07110E]/80"
+                      ? "border-accent/60 bg-accent/10"
+                      : "border-border-muted bg-bg-input/80"
                   }`}
                 >
                   <div
                     className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 ${
                       concluida
-                        ? "bg-[#4ade80] text-[#06100C]"
+                        ? "bg-accent text-text-on-accent"
                         : ativa
-                          ? "bg-[#10251E] text-[#4ade80]"
-                          : "bg-[#10251E] text-[#8FB5A4]"
+                          ? "bg-bg-icon text-accent"
+                          : "bg-bg-icon text-text-label"
                     }`}
                   >
                     {concluida ? <Check size={15} /> : <Icone size={15} />}
@@ -296,7 +296,7 @@ function PainelLateral({
                     <p className="text-white text-sm font-bold">
                       {etapa.titulo}
                     </p>
-                    <p className="text-[#8FB5A4] text-[11px]">
+                    <p className="text-text-label text-[11px]">
                       {index === etapaAtual
                         ? "Em preenchimento"
                         : concluida
@@ -309,26 +309,26 @@ function PainelLateral({
             })}
           </div>
 
-          <div className="rounded-3xl border border-[#1B3A30] bg-[#07110E] p-5 mb-5">
-            <p className="text-[#8FB5A4] text-[10px] uppercase tracking-[0.18em] font-bold mb-4">
+          <div className="rounded-3xl border border-border-muted bg-bg-input p-5 mb-5">
+            <p className="text-text-label text-[10px] uppercase tracking-[0.18em] font-bold mb-4">
               Resumo
             </p>
 
             <div className="space-y-4">
               <div>
-                <p className="text-[#8FB5A4] text-[11px] mb-1">Cidadão</p>
+                <p className="text-text-label text-[11px] mb-1">Cidadão</p>
                 <p className="text-white text-sm font-bold">{cidadaoNome}</p>
               </div>
 
               <div>
-                <p className="text-[#8FB5A4] text-[11px] mb-1">Motivo</p>
+                <p className="text-text-label text-[11px] mb-1">Motivo</p>
                 <p className="text-white text-sm font-bold">
                   {demandaFinal || "Não informado"}
                 </p>
               </div>
 
               <div>
-                <p className="text-[#8FB5A4] text-[11px] mb-1">Urgência</p>
+                <p className="text-text-label text-[11px] mb-1">Urgência</p>
                 <p className="text-white text-sm font-bold">
                   {urgencia === "alta" && "Atenção imediata"}
                   {urgencia === "media" && "Retorno breve"}
@@ -337,7 +337,7 @@ function PainelLateral({
               </div>
 
               <div>
-                <p className="text-[#8FB5A4] text-[11px] mb-1">Situações</p>
+                <p className="text-text-label text-[11px] mb-1">Situações</p>
                 <p className="text-white text-sm font-bold">{situacoesCount}</p>
               </div>
             </div>
@@ -346,8 +346,8 @@ function PainelLateral({
           <div
             className={`rounded-2xl border px-4 py-3 ${
               formularioValido
-                ? "border-[#4ade80]/40 bg-[#4ade80]/10 text-[#4ade80]"
-                : "border-[#1B3A30] bg-[#07110E] text-[#8FB5A4]"
+                ? "border-accent/40 bg-accent/10 text-accent"
+                : "border-border-muted bg-bg-input text-text-label"
             }`}
           >
             <div className="flex items-center gap-2">
@@ -757,7 +757,7 @@ export default function Triagem() {
           </div>
 
           <div>
-            <p className="text-[#8FB5A4] text-[11px] font-bold uppercase tracking-[0.18em] mb-3">Benefícios sociais</p>
+            <p className="text-text-label text-[11px] font-bold uppercase tracking-[0.18em] mb-3">Benefícios sociais</p>
             <div className="grid sm:grid-cols-2 gap-3">
               {BENEFICIOS_SOCIAIS.map((beneficio) => (
                 <BotaoSelecao key={beneficio} selecionado={beneficios.includes(beneficio)} onClick={() => alternarBeneficio(beneficio)}>
@@ -804,7 +804,7 @@ export default function Triagem() {
       return (
         <div className="space-y-7">
           <div>
-            <p className="text-[#8FB5A4] text-[11px] font-bold uppercase tracking-[0.18em] mb-3">Situação neste momento</p>
+            <p className="text-text-label text-[11px] font-bold uppercase tracking-[0.18em] mb-3">Situação neste momento</p>
             <div className="grid md:grid-cols-3 gap-3">
               {[
                 ["baixa", "Posso aguardar"],
@@ -817,8 +817,8 @@ export default function Triagem() {
                   onClick={() => setUrgencia(valor)}
                   className={`rounded-2xl border p-4 text-center text-sm font-black transition-all ${
                     urgencia === valor
-                      ? "border-[#4ade80]/70 bg-[#4ade80]/12 text-white"
-                      : "border-[#1B3A30] bg-[#07110E] text-[#8FB5A4] hover:border-[#2E5D4E]"
+                      ? "border-accent/70 bg-accent/12 text-white"
+                      : "border-border-muted bg-bg-input text-text-label hover:border-border-accent"
                   }`}
                 >
                   {titulo}
@@ -828,7 +828,7 @@ export default function Triagem() {
           </div>
 
           <div>
-            <p className="text-[#8FB5A4] text-[11px] font-bold uppercase tracking-[0.18em] mb-3">Situações identificadas</p>
+            <p className="text-text-label text-[11px] font-bold uppercase tracking-[0.18em] mb-3">Situações identificadas</p>
             <div className="grid md:grid-cols-2 gap-3">
               {SITUACOES_SOCIAIS.map((situacao) => (
                 <BotaoSelecao key={situacao} selecionado={situacoesMarcadas.includes(situacao)} onClick={() => alternarSituacao(situacao)}>
@@ -854,23 +854,23 @@ export default function Triagem() {
       <div className="space-y-7">
         <CampoTexto label="Relato da situação" value={detalhes} onChange={setDetalhes} Icone={FileText} required textarea rows={9} />
 
-        <div className="rounded-3xl border border-[#1B3A30] bg-[#07110E] p-5">
-          <p className="text-[#8FB5A4] text-[11px] uppercase tracking-[0.18em] font-bold mb-4">Revisão</p>
+        <div className="rounded-3xl border border-border-muted bg-bg-input p-5">
+          <p className="text-text-label text-[11px] uppercase tracking-[0.18em] font-bold mb-4">Revisão</p>
           <div className="grid sm:grid-cols-2 gap-4 text-sm">
             <div>
-              <p className="text-[#8FB5A4] text-xs mb-1">Motivo</p>
+              <p className="text-text-label text-xs mb-1">Motivo</p>
               <p className="text-white font-bold">{obterDemandaFinal() || "Não informado"}</p>
             </div>
             <div>
-              <p className="text-[#8FB5A4] text-xs mb-1">Contato</p>
+              <p className="text-text-label text-xs mb-1">Contato</p>
               <p className="text-white font-bold">{telefone || "Não informado"}</p>
             </div>
             <div>
-              <p className="text-[#8FB5A4] text-xs mb-1">Localidade</p>
+              <p className="text-text-label text-xs mb-1">Localidade</p>
               <p className="text-white font-bold">{bairroLocalidade || "Não informado"}</p>
             </div>
             <div>
-              <p className="text-[#8FB5A4] text-xs mb-1">Situações</p>
+              <p className="text-text-label text-xs mb-1">Situações</p>
               <p className="text-white font-bold">{obterSituacoesFinais().length}</p>
             </div>
           </div>
@@ -881,10 +881,10 @@ export default function Triagem() {
 
   if (carregando) {
     return (
-      <div className="min-h-screen bg-[#06100C] flex items-center justify-center font-sans">
+      <div className="min-h-screen bg-bg-base flex items-center justify-center font-sans">
         <div className="flex flex-col items-center gap-4">
-          <div className="w-10 h-10 border-2 border-[#1B3A30] border-t-[#4ade80] rounded-full animate-spin" />
-          <p className="text-[#8FB5A4] text-sm font-medium tracking-wide">Carregando acolhimento...</p>
+          <div className="w-10 h-10 border-2 border-border-muted border-t-accent rounded-full animate-spin" />
+          <p className="text-text-label text-sm font-medium tracking-wide">Carregando acolhimento...</p>
         </div>
       </div>
     );
@@ -892,18 +892,18 @@ export default function Triagem() {
 
   if (casoExistente && !modoEdicao) {
     return (
-      <div className="min-h-screen bg-[#06100C] flex items-center justify-center px-6 py-10 font-sans">
-        <div className="w-full max-w-md bg-[#0D1D18] border border-[#1B3A30] rounded-[2rem] p-8 text-center shadow-2xl">
-          <div className="w-14 h-14 rounded-2xl bg-[#4ade80] text-[#06100C] flex items-center justify-center mx-auto mb-5">
+      <div className="min-h-screen bg-bg-base flex items-center justify-center px-6 py-10 font-sans">
+        <div className="w-full max-w-md bg-bg-elevated border border-border-muted rounded-[2rem] p-8 text-center shadow-2xl">
+          <div className="w-14 h-14 rounded-2xl bg-accent text-text-on-accent flex items-center justify-center mx-auto mb-5">
             <CheckCircle size={24} />
           </div>
-          <p className="text-[#4ade80] text-[10px] uppercase tracking-[0.2em] font-black mb-2">Plataforma EloSocial</p>
+          <p className="text-accent text-[10px] uppercase tracking-[0.2em] font-black mb-2">Plataforma EloSocial</p>
           <h1 className="text-white text-2xl font-black mb-3">Acompanhamento ativo</h1>
-          <p className="text-[#8FB5A4] text-sm leading-relaxed mb-7">Você já possui um caso social em andamento.</p>
+          <p className="text-text-label text-sm leading-relaxed mb-7">Você já possui um caso social em andamento.</p>
           <button
             type="button"
             onClick={() => navigate("/acompanhamento")}
-            className="w-full bg-[#4ade80] text-[#06100C] hover:bg-[#22c55e] py-3.5 rounded-2xl text-sm font-black transition-all"
+            className="w-full bg-accent text-text-on-accent hover:bg-accent-hover py-3.5 rounded-2xl text-sm font-black transition-all"
           >
             Ir para acompanhamento
           </button>
@@ -918,31 +918,31 @@ export default function Triagem() {
   const IconeEtapa = etapa.Icone;
 
   return (
-    <div className="min-h-screen bg-[#06100C] text-slate-200 font-sans selection:bg-[#4ade80]/30">
+    <div className="min-h-screen bg-bg-base text-slate-200 font-sans selection:bg-accent/30">
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-[-12rem] right-[-10rem] w-[32rem] h-[32rem] rounded-full bg-[#4ade80]/10 blur-3xl" />
+        <div className="absolute top-[-12rem] right-[-10rem] w-[32rem] h-[32rem] rounded-full bg-accent/10 blur-3xl" />
         <div className="absolute bottom-[-14rem] left-[-12rem] w-[36rem] h-[36rem] rounded-full bg-emerald-300/5 blur-3xl" />
       </div>
 
-      <header className="relative z-10 border-b border-[#1B3A30]/80 bg-[#06100C]/75 backdrop-blur-xl px-6 py-4">
+      <header className="relative z-10 border-b border-border-muted/80 bg-bg-base/75 backdrop-blur-xl px-6 py-4">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             {modoEdicao && (
               <button
                 type="button"
                 onClick={() => navigate("/acompanhamento")}
-                className="p-2 -ml-2 rounded-xl text-[#8FB5A4] hover:text-white hover:bg-[#0D1D18] transition-colors"
+                className="p-2 -ml-2 rounded-xl text-text-label hover:text-white hover:bg-bg-elevated transition-colors"
                 title="Voltar para acompanhamento sem salvar"
               >
                 <ArrowLeft size={20} />
               </button>
             )}
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-2xl bg-[#4ade80] text-[#06100C] flex items-center justify-center shadow-[0_0_30px_rgba(74,222,128,0.18)]">
+              <div className="w-10 h-10 rounded-2xl bg-accent text-text-on-accent flex items-center justify-center shadow-[0_0_30px_rgba(74,222,128,0.18)]">
                 <HeartHandshake size={21} />
               </div>
               <div>
-                <p className="text-[#4ade80] text-[10px] uppercase tracking-[0.22em] font-black mb-0.5">Plataforma EloSocial</p>
+                <p className="text-accent text-[10px] uppercase tracking-[0.22em] font-black mb-0.5">Plataforma EloSocial</p>
                 <h1 className="text-xl font-black tracking-tight text-white">{modoEdicao ? "Editar acolhimento" : "Acolhimento social"}</h1>
               </div>
             </div>
@@ -954,7 +954,7 @@ export default function Triagem() {
                 type="button"
                 onClick={lidarComEnvio}
                 disabled={enviando || !formularioValido}
-                className="flex items-center gap-2 border border-[#4ade80]/40 text-[#4ade80] bg-[#4ade80]/10 hover:bg-[#4ade80]/15 disabled:border-[#1B3A30] disabled:bg-[#07110E] disabled:text-[#6B8F7F] px-4 py-2.5 rounded-2xl text-sm font-black transition-all"
+                className="flex items-center gap-2 border border-accent/40 text-accent bg-accent/10 hover:bg-accent/15 disabled:border-border-muted disabled:bg-bg-input disabled:text-text-disabled px-4 py-2.5 rounded-2xl text-sm font-black transition-all"
               >
                 {enviando ? (
                   <>
@@ -974,9 +974,9 @@ export default function Triagem() {
                 )}
               </button>
             )}
-            <div className="flex items-center gap-2 border border-[#1B3A30] bg-[#0D1D18] rounded-2xl px-4 py-2.5">
-              <User size={16} className="text-[#4ade80]" />
-              <p className="text-[#E8F5EE] text-sm font-bold">{cidadaoNome}</p>
+            <div className="flex items-center gap-2 border border-border-muted bg-bg-elevated rounded-2xl px-4 py-2.5">
+              <User size={16} className="text-accent" />
+              <p className="text-text-primary text-sm font-bold">{cidadaoNome}</p>
             </div>
           </div>
         </div>
@@ -985,38 +985,38 @@ export default function Triagem() {
       <form onSubmit={lidarComEnvio} className="relative z-10">
         <main className="max-w-7xl mx-auto p-6 grid lg:grid-cols-12 gap-6 items-start">
           <div className="lg:col-span-8">
-            <section className="relative overflow-hidden rounded-[2rem] border border-[#1B3A30] bg-[#0D1D18] p-7 md:p-9 shadow-2xl mb-6">
-              <div className="absolute -top-24 -right-24 w-64 h-64 rounded-full bg-[#4ade80]/10 blur-3xl" />
+            <section className="relative overflow-hidden rounded-[2rem] border border-border-muted bg-bg-elevated p-7 md:p-9 shadow-2xl mb-6">
+              <div className="absolute -top-24 -right-24 w-64 h-64 rounded-full bg-accent/10 blur-3xl" />
               <div className="relative flex flex-col md:flex-row md:items-end md:justify-between gap-6">
                 <div>
-                  <div className="inline-flex items-center gap-2 rounded-full border border-[#1B3A30] bg-[#07110E] px-3 py-1.5 mb-5">
-                    <Lock size={13} className="text-[#4ade80]" />
-                    <span className="text-[#8FB5A4] text-xs font-bold">Informações protegidas</span>
+                  <div className="inline-flex items-center gap-2 rounded-full border border-border-muted bg-bg-input px-3 py-1.5 mb-5">
+                    <Lock size={13} className="text-accent" />
+                    <span className="text-text-label text-xs font-bold">Informações protegidas</span>
                   </div>
                   <div className="flex items-center gap-3 mb-4">
-                    <div className="w-12 h-12 rounded-2xl bg-[#10251E] text-[#4ade80] flex items-center justify-center">
+                    <div className="w-12 h-12 rounded-2xl bg-bg-icon text-accent flex items-center justify-center">
                       <IconeEtapa size={22} />
                     </div>
                     <div>
-                      <p className="text-[#4ade80] text-[10px] uppercase tracking-[0.22em] font-black mb-1">Etapa {etapaAtual + 1} de {ETAPAS.length}</p>
+                      <p className="text-accent text-[10px] uppercase tracking-[0.22em] font-black mb-1">Etapa {etapaAtual + 1} de {ETAPAS.length}</p>
                       <h2 className="text-white text-3xl md:text-4xl font-black tracking-tight">{etapa.titulo}</h2>
                     </div>
                   </div>
-                  <p className="text-[#B7D2C6] text-sm md:text-base leading-relaxed max-w-2xl">{etapa.subtitulo}</p>
+                  <p className="text-text-body text-sm md:text-base leading-relaxed max-w-2xl">{etapa.subtitulo}</p>
                 </div>
                 <div className="w-full md:w-48">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-[#8FB5A4] text-xs font-bold">Campos essenciais</span>
-                    <span className="text-[#4ade80] text-xs font-black">{calcularProgressoReal()}%</span>
+                    <span className="text-text-label text-xs font-bold">Campos essenciais</span>
+                    <span className="text-accent text-xs font-black">{calcularProgressoReal()}%</span>
                   </div>
-                  <div className="h-2 bg-[#183429] rounded-full overflow-hidden">
-                    <div className="h-full bg-[#4ade80] rounded-full transition-all duration-300" style={{ width: `${calcularProgressoReal()}%` }} />
+                  <div className="h-2 bg-bg-progress rounded-full overflow-hidden">
+                    <div className="h-full bg-accent rounded-full transition-all duration-300" style={{ width: `${calcularProgressoReal()}%` }} />
                   </div>
                 </div>
               </div>
             </section>
 
-            <section className="rounded-[2rem] border border-[#1B3A30] bg-[#0D1D18]/95 p-6 md:p-8 shadow-2xl">
+            <section className="rounded-[2rem] border border-border-muted bg-bg-elevated/95 p-6 md:p-8 shadow-2xl">
               {renderEtapa()}
             </section>
 
@@ -1026,7 +1026,7 @@ export default function Triagem() {
                 type="button"
                 onClick={voltar}
                 disabled={etapaAtual === 0}
-                className="sm:w-40 flex items-center justify-center gap-2 border border-[#1B3A30] text-[#8FB5A4] bg-[#07110E] hover:text-white hover:border-[#2E5D4E] disabled:opacity-40 py-3.5 rounded-2xl text-sm font-bold transition-all"
+                className="sm:w-40 flex items-center justify-center gap-2 border border-border-muted text-text-label bg-bg-input hover:text-white hover:border-border-accent disabled:opacity-40 py-3.5 rounded-2xl text-sm font-bold transition-all"
               >
                 <ChevronLeft size={16} />
                 Voltar
@@ -1036,7 +1036,7 @@ export default function Triagem() {
                 <button
                   type="button"
                   onClick={avancar}
-                  className="flex-1 flex items-center justify-center gap-2 bg-[#4ade80] text-[#06100C] hover:bg-[#22c55e] disabled:bg-[#183429] disabled:text-[#6B8F7F] py-3.5 rounded-2xl text-sm font-black transition-all"
+                  className="flex-1 flex items-center justify-center gap-2 bg-accent text-text-on-accent hover:bg-accent-hover disabled:bg-bg-progress disabled:text-text-disabled py-3.5 rounded-2xl text-sm font-black transition-all"
                 >
                   Continuar
                   <ChevronRight size={16} />
@@ -1045,7 +1045,7 @@ export default function Triagem() {
                 <button
                   type="submit"
                   disabled={enviando || !formularioValido}
-                  className="flex-1 flex items-center justify-center gap-2 bg-[#4ade80] text-[#06100C] hover:bg-[#22c55e] disabled:bg-[#183429] disabled:text-[#6B8F7F] py-3.5 rounded-2xl text-sm font-black transition-all"
+                  className="flex-1 flex items-center justify-center gap-2 bg-accent text-text-on-accent hover:bg-accent-hover disabled:bg-bg-progress disabled:text-text-disabled py-3.5 rounded-2xl text-sm font-black transition-all"
                 >
                   {enviando ? (
                     <>

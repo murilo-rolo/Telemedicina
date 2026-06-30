@@ -228,9 +228,9 @@ export default function TeleconferenciaAssistente() {
   const BotaoLateral = ({ titulo, Icone, onClick }) => (
     <button
       onClick={onClick}
-      className="w-full group flex items-center gap-3 border border-[#1A332A] rounded-2xl p-4 bg-[#0B1511] hover:border-[#4ade80]/50 hover:bg-[#142921] transition-all text-left"
+      className="w-full group flex items-center gap-3 border border-border rounded-2xl p-4 bg-bg-base hover:border-accent/50 hover:bg-bg-surface-hover transition-all text-left"
     >
-      <div className="bg-[#1A332A] p-2 rounded-lg text-[#7A9C8D] group-hover:bg-[#4ade80]/20 group-hover:text-[#4ade80] transition-colors">
+      <div className="bg-border p-2 rounded-lg text-text-secondary group-hover:bg-accent/20 group-hover:text-accent transition-colors">
         <Icone size={18} />
       </div>
 
@@ -281,15 +281,15 @@ export default function TeleconferenciaAssistente() {
     const Icone = painel.Icone
   
     return (
-      <section className="bg-[#11211C] border border-[#1A332A] rounded-3xl p-5 md:p-6">
+      <section className="bg-bg-surface border border-border rounded-3xl p-5 md:p-6">
         <div className="flex items-center justify-between gap-4 mb-5">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-[#1A332A] text-[#4ade80] flex items-center justify-center">
+            <div className="w-10 h-10 rounded-xl bg-border text-accent flex items-center justify-center">
               <Icone size={18} />
             </div>
   
             <div>
-              <p className="text-[#4ade80] text-[10px] uppercase tracking-widest font-bold">
+              <p className="text-accent text-[10px] uppercase tracking-widest font-bold">
                 Durante a chamada
               </p>
               <h2 className="text-white text-lg font-bold">
@@ -301,14 +301,14 @@ export default function TeleconferenciaAssistente() {
           <button
             type="button"
             onClick={() => setPainelAtivo(null)}
-            className="p-2 rounded-xl text-[#7A9C8D] hover:text-white hover:bg-[#0B1511] transition-colors"
+            className="p-2 rounded-xl text-text-secondary hover:text-white hover:bg-bg-base transition-colors"
             title="Fechar painel"
           >
             <X size={18} />
           </button>
         </div>
   
-        <div className="bg-[#0B1511] border border-[#1A332A] rounded-2xl p-4">
+        <div className="bg-bg-base border border-border rounded-2xl p-4">
           {painel.conteudo}
         </div>
       </section>
@@ -317,10 +317,10 @@ export default function TeleconferenciaAssistente() {
 
   if (carregando) {
     return (
-      <div className="min-h-screen bg-[#0B1511] flex items-center justify-center font-sans">
+      <div className="min-h-screen bg-bg-base flex items-center justify-center font-sans">
         <div className="flex flex-col items-center gap-4 animate-fadeUp">
-          <div className="w-10 h-10 border-2 border-[#1A332A] border-t-[#4ade80] rounded-full animate-spin"></div>
-          <p className="text-[#7A9C8D] text-sm font-medium tracking-wide">
+          <div className="w-10 h-10 border-2 border-border border-t-accent rounded-full animate-spin"></div>
+          <p className="text-text-secondary text-sm font-medium tracking-wide">
             Carregando teleconferência...
           </p>
         </div>
@@ -333,19 +333,19 @@ export default function TeleconferenciaAssistente() {
   const casoConcluido = caso?.status === 'concluido'
 
   return (
-    <div className="min-h-screen bg-[#0B1511] text-slate-200 font-sans selection:bg-[#4ade80]/30">
-      <header className="sticky top-0 z-10 bg-[#0B1511]/80 backdrop-blur-md border-b border-[#1A332A] px-6 py-4">
+    <div className="min-h-screen bg-bg-base text-slate-200 font-sans selection:bg-accent/30">
+      <header className="sticky top-0 z-10 bg-bg-base/80 backdrop-blur-md border-b border-border px-6 py-4">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             <button
               onClick={voltarAoCaso}
-              className="p-2 -ml-2 rounded-xl text-[#7A9C8D] hover:text-white hover:bg-[#11211C] transition-colors"
+              className="p-2 -ml-2 rounded-xl text-text-secondary hover:text-white hover:bg-bg-surface transition-colors"
             >
               <ChevronLeft size={20} />
             </button>
 
             <div>
-              <p className="text-[#4ade80] text-[10px] uppercase tracking-widest font-bold mb-0.5">
+              <p className="text-accent text-[10px] uppercase tracking-widest font-bold mb-0.5">
                 Plataforma EloSocial
               </p>
 
@@ -357,7 +357,7 @@ export default function TeleconferenciaAssistente() {
 
           <button
             onClick={sair}
-            className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold border border-[#1A332A] text-[#7A9C8D] bg-[#11211C] hover:text-white hover:border-[#24473B] transition-all"
+            className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold border border-border text-text-secondary bg-bg-surface hover:text-white hover:border-border-hover transition-all"
           >
             <LogOut size={16} />
             Sair
@@ -367,22 +367,22 @@ export default function TeleconferenciaAssistente() {
 
       <main className="max-w-7xl mx-auto p-6 grid lg:grid-cols-12 gap-6 items-start">
         <div className="lg:col-span-8 space-y-6">
-          <section className="bg-[#11211C] border border-[#1A332A] rounded-3xl p-4 md:p-5">
+          <section className="bg-bg-surface border border-border rounded-3xl p-4 md:p-5">
             {videoAtivo ? (
-              <div className="h-[620px] bg-[#050A08] border border-[#1A332A] rounded-2xl overflow-hidden ring-4 ring-[#4ade80]/10">
+              <div className="h-[620px] bg-bg-video border border-border rounded-2xl overflow-hidden ring-4 ring-accent/10">
                 {salaUrl ? (
                   <VideoCall url={salaUrl} userName="Assistente Social" />
                 ) : (
                   <div className="h-full flex items-center justify-center">
-                    <p className="text-[#7A9C8D] text-sm">
+                    <p className="text-text-secondary text-sm">
                       Preparando sala de vídeo...
                     </p>
                   </div>
                 )}
               </div>
             ) : (
-              <div className="h-[620px] border border-dashed border-[#24473B] bg-[#0B1511] rounded-2xl flex flex-col items-center justify-center text-center p-8">
-                <div className="w-16 h-16 rounded-2xl bg-[#1A332A] flex items-center justify-center mb-5 text-[#4ade80]">
+              <div className="h-[620px] border border-dashed border-border-hover bg-bg-base rounded-2xl flex flex-col items-center justify-center text-center p-8">
+                <div className="w-16 h-16 rounded-2xl bg-border flex items-center justify-center mb-5 text-accent">
                   <Video size={28} />
                 </div>
 
@@ -390,14 +390,14 @@ export default function TeleconferenciaAssistente() {
                   Sala não iniciada
                 </h2>
 
-                <p className="text-[#7A9C8D] text-sm leading-relaxed max-w-md mb-6">
+                <p className="text-text-secondary text-sm leading-relaxed max-w-md mb-6">
                   Inicie a teleconferência para abrir o atendimento por vídeo.
                 </p>
 
                 <button
                   onClick={iniciarChamada}
                   disabled={salvando || casoConcluido}
-                  className="flex items-center justify-center gap-2 bg-[#4ade80] text-[#0B1511] hover:bg-[#22c55e] disabled:bg-[#1A332A] disabled:text-[#7A9C8D] px-6 py-3 rounded-xl text-sm font-bold transition-all shadow-[0_0_15px_rgba(74,222,128,0.15)] hover:shadow-[0_0_25px_rgba(74,222,128,0.25)]"
+                  className="flex items-center justify-center gap-2 bg-accent text-text-on-accent hover:bg-accent-hover disabled:bg-border disabled:text-text-secondary px-6 py-3 rounded-xl text-sm font-bold transition-all shadow-[0_0_15px_rgba(74,222,128,0.15)] hover:shadow-[0_0_25px_rgba(74,222,128,0.25)]"
                 >
                   <Video size={16} />
                   {salvando ? 'Conectando...' : 'Iniciar chamada'}
@@ -410,10 +410,10 @@ export default function TeleconferenciaAssistente() {
         </div>
 
         <div className="lg:col-span-4 space-y-6">
-          <section className="bg-[#11211C] border border-[#1A332A] rounded-3xl p-6">
+          <section className="bg-bg-surface border border-border rounded-3xl p-6">
             <div className="flex items-center gap-2 mb-5">
-              <User size={14} className="text-[#4ade80]" />
-              <h3 className="text-[#7A9C8D] text-xs font-bold uppercase tracking-widest">
+              <User size={14} className="text-accent" />
+              <h3 className="text-text-secondary text-xs font-bold uppercase tracking-widest">
                 Caso social
               </h3>
             </div>
@@ -440,18 +440,18 @@ export default function TeleconferenciaAssistente() {
               )}
             </div>
 
-            <div className="bg-[#0B1511] border border-[#1A332A] rounded-2xl p-4">
+            <div className="bg-bg-base border border-border rounded-2xl p-4">
               <div className="flex items-start gap-3">
-                <Shield size={18} className="text-[#4ade80] mt-0.5 shrink-0" />
-                <p className="text-[#7A9C8D] text-sm leading-relaxed">
+                <Shield size={18} className="text-accent mt-0.5 shrink-0" />
+                <p className="text-text-secondary text-sm leading-relaxed">
                   Atendimento vinculado ao prontuário social do cidadão.
                 </p>
               </div>
             </div>
           </section>
 
-          <section className="bg-[#11211C] border border-[#1A332A] rounded-3xl p-6">
-            <h3 className="text-[#7A9C8D] text-xs font-bold uppercase tracking-widest mb-4">
+          <section className="bg-bg-surface border border-border rounded-3xl p-6">
+            <h3 className="text-text-secondary text-xs font-bold uppercase tracking-widest mb-4">
               Ações da chamada
             </h3>
 
@@ -460,7 +460,7 @@ export default function TeleconferenciaAssistente() {
                 <button
                   onClick={iniciarChamada}
                   disabled={salvando || casoConcluido}
-                  className="w-full flex items-center justify-center gap-2 bg-[#4ade80] text-[#0B1511] hover:bg-[#22c55e] disabled:bg-[#1A332A] disabled:text-[#7A9C8D] px-6 py-3 rounded-xl text-sm font-bold transition-all"
+                  className="w-full flex items-center justify-center gap-2 bg-accent text-text-on-accent hover:bg-accent-hover disabled:bg-border disabled:text-text-secondary px-6 py-3 rounded-xl text-sm font-bold transition-all"
                 >
                   <Video size={16} />
                   {salvando ? 'Conectando...' : 'Iniciar chamada'}
@@ -478,7 +478,7 @@ export default function TeleconferenciaAssistente() {
 
               <button
                 onClick={voltarAoCaso}
-                className="w-full flex items-center justify-center gap-2 border border-[#1A332A] text-[#7A9C8D] bg-[#0B1511] hover:text-white hover:border-[#24473B] px-6 py-3 rounded-xl text-sm font-semibold transition-all"
+                className="w-full flex items-center justify-center gap-2 border border-border text-text-secondary bg-bg-base hover:text-white hover:border-border-hover px-6 py-3 rounded-xl text-sm font-semibold transition-all"
               >
                 <ChevronLeft size={16} />
                 Voltar ao prontuário
@@ -493,8 +493,8 @@ export default function TeleconferenciaAssistente() {
             )}
           </section>
 
-          <section className="bg-[#11211C] border border-[#1A332A] rounded-3xl p-6">
-            <h3 className="text-[#7A9C8D] text-xs font-bold uppercase tracking-widest mb-4">
+          <section className="bg-bg-surface border border-border rounded-3xl p-6">
+            <h3 className="text-text-secondary text-xs font-bold uppercase tracking-widest mb-4">
               Ferramentas
             </h3>
 

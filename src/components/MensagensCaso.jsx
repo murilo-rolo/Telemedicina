@@ -159,24 +159,24 @@ export default function MensagensCaso({ casoId, remetenteTipo, remetenteNome, mo
     <div className="flex flex-col h-full w-full bg-transparent">
       
       {/* Área de rolagem do chat */}
-      <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4 bg-[#050A08]">
+      <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4 bg-bg-video">
         
         {carregando && (
-          <div className="flex flex-col items-center justify-center h-full gap-3 text-[#7A9C8D]">
-            <Loader2 className="animate-spin text-[#4ade80]" size={28} />
+          <div className="flex flex-col items-center justify-center h-full gap-3 text-text-secondary">
+            <Loader2 className="animate-spin text-accent" size={28} />
             <p className="text-sm font-medium">Sincronizando histórico...</p>
           </div>
         )}
 
         {!carregando && mensagens.length === 0 && (
           <div className="flex flex-col items-center justify-center h-full text-center mt-10 opacity-70">
-            <div className="w-16 h-16 bg-[#11211C] rounded-full flex items-center justify-center mb-4 border border-[#1A332A]">
-              <MessageSquare size={24} className="text-[#4ade80]" />
+            <div className="w-16 h-16 bg-bg-surface rounded-full flex items-center justify-center mb-4 border border-border">
+              <MessageSquare size={24} className="text-accent" />
             </div>
-            <p className="text-[#E2E8F0] text-sm font-bold mb-1">
+            <p className="text-text-primary text-sm font-bold mb-1">
               Nenhuma mensagem trocada
             </p>
-            <p className="text-[#7A9C8D] text-xs">
+            <p className="text-text-secondary text-xs">
               O histórico deste caso está vazio.
             </p>
           </div>
@@ -193,19 +193,19 @@ export default function MensagensCaso({ casoId, remetenteTipo, remetenteNome, mo
               <div
                 className={`max-w-[85%] sm:max-w-[75%] px-4 py-3 shadow-sm ${
                   minhaMensagem
-                    ? 'bg-[#4ade80] text-[#0B1511] rounded-2xl rounded-tr-sm'
-                    : 'bg-[#1A332A] border border-[#24473B] text-[#E2E8F0] rounded-2xl rounded-tl-sm'
+                    ? 'bg-accent text-text-on-accent rounded-2xl rounded-tr-sm'
+                    : 'bg-border border border-border-hover text-text-primary rounded-2xl rounded-tl-sm'
                 }`}
               >
                 <div className="flex items-center justify-between gap-4 mb-1.5">
                   <p className={`text-[10px] uppercase tracking-wider font-bold ${
-                    minhaMensagem ? 'text-[#06301A]' : 'text-[#4ade80]'
+                    minhaMensagem ? 'text-text-on-accent' : 'text-accent'
                   }`}>
                     {mensagem.remetente_nome || obterNomeTipo(mensagem.remetente_tipo)}
                   </p>
 
                   <p className={`text-[10px] font-medium ${
-                    minhaMensagem ? 'text-[#06301A]/70' : 'text-[#7A9C8D]'
+                    minhaMensagem ? 'text-text-on-accent/70' : 'text-text-secondary'
                   }`}>
                     {formatarData(mensagem.created_at)}
                   </p>
@@ -223,14 +223,14 @@ export default function MensagensCaso({ casoId, remetenteTipo, remetenteNome, mo
       </div>
 
       {/* Área de Input (Fixo na parte inferior) */}
-      <div className="p-4 bg-[#11211C] border-t border-[#1A332A]">
+      <div className="p-4 bg-bg-surface border-t border-border">
         <form onSubmit={enviarMensagem} className="flex gap-3 max-w-4xl mx-auto items-end">
           <textarea
             value={texto}
             onChange={(e) => setTexto(e.target.value)}
             rows="2"
             placeholder="Escreva sua mensagem..."
-            className="flex-1 bg-[#0B1511] border border-[#1A332A] rounded-xl px-4 py-3 text-sm text-[#E2E8F0] placeholder-[#4A6B5C] outline-none focus:border-[#4ade80]/50 focus:ring-1 focus:ring-[#4ade80]/50 resize-none transition-all"
+            className="flex-1 bg-bg-base border border-border rounded-xl px-4 py-3 text-sm text-text-primary placeholder-text-muted outline-none focus:border-accent/50 focus:ring-1 focus:ring-accent/50 resize-none transition-all"
             onKeyDown={(e) => {
               // Permite enviar com "Enter" e pular linha com "Shift + Enter"
               if (e.key === 'Enter' && !e.shiftKey) {
@@ -243,7 +243,7 @@ export default function MensagensCaso({ casoId, remetenteTipo, remetenteNome, mo
           <button
             type="submit"
             disabled={enviando || !texto.trim()}
-            className="h-[46px] flex items-center justify-center gap-2 bg-[#4ade80] hover:bg-[#22c55e] disabled:bg-[#1A332A] disabled:text-[#4A6B5C] text-[#0B1511] px-5 rounded-xl text-sm font-bold transition-all shadow-[0_0_15px_rgba(74,222,128,0.1)] hover:shadow-[0_0_20px_rgba(74,222,128,0.2)] disabled:shadow-none mb-[2px]"
+            className="h-[46px] flex items-center justify-center gap-2 bg-accent hover:bg-accent-hover disabled:bg-border disabled:text-text-muted text-text-on-accent px-5 rounded-xl text-sm font-bold transition-all shadow-[0_0_15px_rgba(74,222,128,0.1)] hover:shadow-[0_0_20px_rgba(74,222,128,0.2)] disabled:shadow-none mb-[2px]"
           >
             {enviando ? <Loader2 size={18} className="animate-spin" /> : <Send size={18} />}
             <span className="hidden sm:inline">{enviando ? 'Enviando...' : 'Enviar'}</span>

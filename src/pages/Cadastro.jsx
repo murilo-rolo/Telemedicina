@@ -64,26 +64,26 @@ export default function Cadastro() {
   }
 
   return (
-    <div className="min-h-screen flex font-sans selection:bg-[#4ade80]/30 bg-[#050A08]">
+    <div className="min-h-screen flex font-sans selection:bg-accent/30 bg-bg-video">
       
       {/* Lado Esquerdo - Branding Imersivo (Oculto em telas pequenas) */}
-      <div className="hidden lg:flex w-1/2 bg-[#0B1511] relative overflow-hidden flex-col items-center justify-center border-r border-[#1A332A]">
+      <div className="hidden lg:flex w-1/2 bg-bg-base relative overflow-hidden flex-col items-center justify-center border-r border-border">
         <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_50%,_#1A332A_0%,_transparent_60%)] opacity-40"></div>
-        <div className="absolute -top-32 -left-32 w-[30rem] h-[30rem] bg-[#4ade80]/10 rounded-full blur-[100px]"></div>
-        <div className="absolute -bottom-32 -right-32 w-[30rem] h-[30rem] bg-[#4ade80]/5 rounded-full blur-[100px]"></div>
+        <div className="absolute -top-32 -left-32 w-[30rem] h-[30rem] bg-accent/10 rounded-full blur-[100px]"></div>
+        <div className="absolute -bottom-32 -right-32 w-[30rem] h-[30rem] bg-accent/5 rounded-full blur-[100px]"></div>
 
         <div className="relative z-10 text-center px-12 animate-fadeUp">
-          <div className="inline-flex items-center justify-center w-24 h-24 rounded-[2rem] bg-[#11211C] border border-[#1A332A] shadow-2xl mb-8 group">
-            <HeartHandshake className="w-12 h-12 text-[#4ade80] group-hover:scale-110 transition-transform duration-500" strokeWidth={1.5} />
+          <div className="inline-flex items-center justify-center w-24 h-24 rounded-[2rem] bg-bg-surface border border-border shadow-2xl mb-8 group">
+            <HeartHandshake className="w-12 h-12 text-accent group-hover:scale-110 transition-transform duration-500" strokeWidth={1.5} />
           </div>
           <h1 className="text-4xl xl:text-5xl font-bold text-white tracking-tight mb-6">
             Junte-se à EloSocial
           </h1>
-          <p className="text-[#7A9C8D] text-lg xl:text-xl max-w-md mx-auto leading-relaxed font-medium">
+          <p className="text-text-secondary text-lg xl:text-xl max-w-md mx-auto leading-relaxed font-medium">
             O primeiro passo para um acompanhamento social mais humano, ágil e seguro.
           </p>
 
-          <div className="mt-12 flex items-center justify-center gap-2 text-[#4A6B5C] text-sm font-semibold">
+          <div className="mt-12 flex items-center justify-center gap-2 text-text-muted text-sm font-semibold">
             <ShieldCheck size={18} />
             <span>Seus dados são protegidos por criptografia</span>
           </div>
@@ -96,8 +96,8 @@ export default function Cadastro() {
           
           {/* Cabeçalho Mobile */}
           <div className="lg:hidden text-center mb-8">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-[#11211C] border border-[#1A332A] shadow-lg mb-4">
-              <HeartHandshake className="w-8 h-8 text-[#4ade80]" strokeWidth={1.5} />
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-bg-surface border border-border shadow-lg mb-4">
+              <HeartHandshake className="w-8 h-8 text-accent" strokeWidth={1.5} />
             </div>
           </div>
 
@@ -105,7 +105,7 @@ export default function Cadastro() {
             <h2 className="text-3xl sm:text-4xl font-bold text-white tracking-tight mb-3">
               Criar Conta
             </h2>
-            <p className="text-[#7A9C8D] text-base">
+            <p className="text-text-secondary text-base">
               Preencha seus dados para acessar a plataforma.
             </p>
           </div>
@@ -113,73 +113,73 @@ export default function Cadastro() {
           <form onSubmit={lidarComCadastro} className="space-y-5">
             
             <div className="space-y-2">
-              <label className="block text-[#A0BDB0] text-sm font-bold ml-1">
+              <label className="block text-text-secondary text-sm font-bold ml-1">
                 Nome Completo
               </label>
               <div className="relative group">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <User className="h-5 w-5 text-[#4A6B5C] group-focus-within:text-[#4ade80] transition-colors" />
+                  <User className="h-5 w-5 text-text-muted group-focus-within:text-accent transition-colors" />
                 </div>
                 <input 
                   type="text" 
                   required 
                   value={nome} 
                   onChange={(e) => setNome(e.target.value)} 
-                  className="w-full bg-[#11211C] border border-[#1A332A] rounded-2xl pl-12 pr-4 py-4 text-base text-[#E2E8F0] outline-none focus:border-[#4ade80]/50 focus:ring-1 focus:ring-[#4ade80]/50 transition-all shadow-sm" 
+                  className="w-full bg-bg-surface border border-border rounded-2xl pl-12 pr-4 py-4 text-base text-text-primary outline-none focus:border-accent/50 focus:ring-1 focus:ring-accent/50 transition-all shadow-sm" 
                 />
               </div>
             </div>
 
             <div className="space-y-2">
-              <label className="block text-[#A0BDB0] text-sm font-bold ml-1">
+              <label className="block text-text-secondary text-sm font-bold ml-1">
                 E-mail
               </label>
               <div className="relative group">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <Mail className="h-5 w-5 text-[#4A6B5C] group-focus-within:text-[#4ade80] transition-colors" />
+                  <Mail className="h-5 w-5 text-text-muted group-focus-within:text-accent transition-colors" />
                 </div>
                 <input 
                   type="email" 
                   required 
                   value={email} 
                   onChange={(e) => setEmail(e.target.value)} 
-                  className="w-full bg-[#11211C] border border-[#1A332A] rounded-2xl pl-12 pr-4 py-4 text-base text-[#E2E8F0] outline-none focus:border-[#4ade80]/50 focus:ring-1 focus:ring-[#4ade80]/50 transition-all shadow-sm" 
+                  className="w-full bg-bg-surface border border-border rounded-2xl pl-12 pr-4 py-4 text-base text-text-primary outline-none focus:border-accent/50 focus:ring-1 focus:ring-accent/50 transition-all shadow-sm" 
                 />
               </div>
             </div>
 
             <div className="space-y-2">
-              <label className="block text-[#A0BDB0] text-sm font-bold ml-1">
+              <label className="block text-text-secondary text-sm font-bold ml-1">
                 CPF
               </label>
               <div className="relative group">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <CreditCard className="h-5 w-5 text-[#4A6B5C] group-focus-within:text-[#4ade80] transition-colors" />
+                  <CreditCard className="h-5 w-5 text-text-muted group-focus-within:text-accent transition-colors" />
                 </div>
                 <input 
                   type="text" 
                   required 
                   value={cpf} 
                   onChange={(e) => setCpf(e.target.value)} 
-                  className="w-full bg-[#11211C] border border-[#1A332A] rounded-2xl pl-12 pr-4 py-4 text-base text-[#E2E8F0] outline-none focus:border-[#4ade80]/50 focus:ring-1 focus:ring-[#4ade80]/50 transition-all shadow-sm" 
+                  className="w-full bg-bg-surface border border-border rounded-2xl pl-12 pr-4 py-4 text-base text-text-primary outline-none focus:border-accent/50 focus:ring-1 focus:ring-accent/50 transition-all shadow-sm" 
                 />
               </div>
             </div>
 
             <div className="space-y-2">
-              <label className="block text-[#A0BDB0] text-sm font-bold ml-1">
+              <label className="block text-text-secondary text-sm font-bold ml-1">
                 Senha
               </label>
               <div className="relative group">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <Lock className="h-5 w-5 text-[#4A6B5C] group-focus-within:text-[#4ade80] transition-colors" />
+                  <Lock className="h-5 w-5 text-text-muted group-focus-within:text-accent transition-colors" />
                 </div>
                 <input 
                   type="password" 
                   required 
                   value={senha} 
                   onChange={(e) => setSenha(e.target.value)} 
-                  className="w-full bg-[#11211C] border border-[#1A332A] rounded-2xl pl-12 pr-4 py-4 text-base text-[#E2E8F0] outline-none focus:border-[#4ade80]/50 focus:ring-1 focus:ring-[#4ade80]/50 transition-all shadow-sm" 
+                  className="w-full bg-bg-surface border border-border rounded-2xl pl-12 pr-4 py-4 text-base text-text-primary outline-none focus:border-accent/50 focus:ring-1 focus:ring-accent/50 transition-all shadow-sm" 
                 />
               </div>
             </div>
@@ -188,7 +188,7 @@ export default function Cadastro() {
               <button 
                 type="submit" 
                 disabled={carregando} 
-                className="w-full flex items-center justify-center gap-2 bg-[#4ade80] hover:bg-[#22c55e] disabled:bg-[#1A332A] disabled:text-[#4A6B5C] text-[#0B1511] py-4 rounded-2xl text-base font-bold transition-all shadow-[0_0_20px_rgba(74,222,128,0.15)] hover:shadow-[0_0_30px_rgba(74,222,128,0.25)] disabled:shadow-none group"
+                className="w-full flex items-center justify-center gap-2 bg-accent hover:bg-accent-hover disabled:bg-border disabled:text-text-muted text-bg-base py-4 rounded-2xl text-base font-bold transition-all shadow-[0_0_20px_rgba(74,222,128,0.15)] hover:shadow-[0_0_30px_rgba(74,222,128,0.25)] disabled:shadow-none group"
               >
                 {carregando ? (
                   <>
@@ -204,10 +204,10 @@ export default function Cadastro() {
               </button>
             </div>
 
-            <div className="mt-8 text-center pt-6 border-t border-[#1A332A]">
-              <p className="text-[#7A9C8D] text-sm font-medium">
+            <div className="mt-8 text-center pt-6 border-t border-border">
+              <p className="text-text-secondary text-sm font-medium">
                 Já tem uma conta?{' '}
-                <Link to="/" className="text-[#4ade80] font-bold hover:text-[#22c55e] transition-colors hover:underline underline-offset-4">
+                <Link to="/" className="text-accent font-bold hover:text-accent-hover transition-colors hover:underline underline-offset-4">
                   Faça login aqui
                 </Link>
               </p>
